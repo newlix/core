@@ -43,11 +43,14 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 	common.GenerateWarning(w)
 
 	out(w, "package %s", PackageName(c.Package))
-	out(w, `import (
-		"encoding/json"
-		"time"
-)
-
+	out(w, `import "encoding/json"`)
+	for _, t := range c.Types {
+		if t.Name == core.Time.Name {
+			out(w, `import "encoding/json"`)
+			break
+		}
+	}
+	out(w, `
 func ptr[T any](x T) *T {
     return &x
 }

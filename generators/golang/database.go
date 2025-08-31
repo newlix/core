@@ -27,6 +27,9 @@ func GenerateDatabaseFile(c GenerateDatabaseFileConfig) {
 	defer w.Close()
 	common.GenerateWarning(w)
 	out(w, "package %s", PackageName(c.Package))
+
+	GenerateImports(w, c.Package, c.Types)
+
 	out(w, `import (
 	"context"
 	"database/sql"
@@ -46,7 +49,6 @@ type ExecerContext interface {
 }
 
 `)
-	GenerateImports(w, c.Package, c.Types)
 
 	GenerateDatabase(w, c.Package, c.Types)
 }
