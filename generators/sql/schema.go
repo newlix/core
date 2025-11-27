@@ -57,7 +57,8 @@ func writeFields(w io.Writer, table string, ff []core.Field, dialect Dialect) {
 		if f.Name == "id" {
 			continue
 		}
-		out(w, "ALTER TABLE %q ADD COLUMN IF NOT EXISTS %q %s;", table, f.Name, sqlType(f, dialect))
+		ttype := sqlType(f, dialect)
+		out(w, "ALTER TABLE %q ADD COLUMN IF NOT EXISTS %q %s %s;", table, f.Name, ttype, sqlDefault(ttype))
 		if !strings.HasPrefix(f.Type.GoType, "*") {
 			out(w, "ALTER TABLE %q ALTER COLUMN %q SET NOT NULL;", table, f.Name)
 		}
@@ -74,4 +75,13 @@ func sqlType(f core.Field, dialect Dialect) string {
 		log.Fatal("unhandled dialect: " + dialect)
 	}
 	return ""
+}
+
+func sqlDefault(ttype string) string {
+	switch ttype {
+	case core.String.CockroachdbType:
+		return "DEFAULT ''"
+	default:
+		return ""
+	}
 }
