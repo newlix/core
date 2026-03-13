@@ -20,10 +20,8 @@ type Type struct {
 	SwiftType       string   `json:"swift_type"`
 	SwiftDefault    string   `json:"swift_default"`
 	KotlinType      string   `json:"kotlin_type"`
-	KotlinDefault   string   `json:"kotlin_default"`
-	CockroachdbType string   `json:"cockroachdb_type"`
-	SqliteType      string   `json:"sqlite_type"`
-	isInitialized   bool
+	KotlinDefault string `json:"kotlin_default"`
+	isInitialized bool
 	isBuiltin       bool
 }
 
@@ -85,12 +83,10 @@ var String = Type{
 	PrimaryKey:      nil,
 	GoType:          "string",
 	SwiftType:       "String",
-	SwiftDefault:    `""`,
-	KotlinType:      "String",
-	KotlinDefault:   `""`,
-	CockroachdbType: "TEXT",
-	SqliteType:      "TEXT",
-	isBuiltin:       true,
+	SwiftDefault:  `""`,
+	KotlinType:    "String",
+	KotlinDefault: `""`,
+	isBuiltin:     true,
 }
 
 var Int = Type{
@@ -102,9 +98,8 @@ var Int = Type{
 	SwiftType:       "Int",
 	SwiftDefault:    "0",
 	KotlinType:      "Int",
-	KotlinDefault:   "0",
-	CockroachdbType: "INT",
-	isBuiltin:       true,
+	KotlinDefault: "0",
+	isBuiltin:     true,
 }
 
 var Bool = Type{
@@ -116,10 +111,8 @@ var Bool = Type{
 	SwiftType:       "Bool",
 	SwiftDefault:    "false",
 	KotlinType:      "Boolean",
-	KotlinDefault:   "false",
-	CockroachdbType: "BOOL",
-	SqliteType:      "BOOLEAN",
-	isBuiltin:       true,
+	KotlinDefault: "false",
+	isBuiltin:     true,
 }
 
 var Float = Type{
@@ -131,10 +124,8 @@ var Float = Type{
 	SwiftType:       "Double",
 	SwiftDefault:    "0.0",
 	KotlinType:      "Double",
-	KotlinDefault:   "0.0",
-	CockroachdbType: "FLOAT",
-	SqliteType:      "DOUBLE",
-	isBuiltin:       true,
+	KotlinDefault: "0.0",
+	isBuiltin:     true,
 }
 
 var Time = Type{
@@ -146,8 +137,6 @@ var Time = Type{
 	SwiftType:       "Date",
 	SwiftDefault:    "Date()",
 	KotlinType:      "Date",
-	KotlinDefault:   "Date()",
-	CockroachdbType: "Timestamp",
-	SqliteType:      "DATETIME",
-	isBuiltin:       true,
+	KotlinDefault: "Date()",
+	isBuiltin:     true,
 }

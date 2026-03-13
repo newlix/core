@@ -4,24 +4,13 @@ import (
 	"github.com/newlix/core/examples/todo/spec"
 	"github.com/newlix/core/generators/golang"
 	"github.com/newlix/core/generators/kotlin"
-	"github.com/newlix/core/generators/sql"
 	"github.com/newlix/core/generators/swift"
 )
 
 func main() {
-	sql.GenerateSchemaFile(sql.GenerateSchemaFileConfig{
-		Output:  "sql/schema.gen.sql",
-		Types:   spec.Types,
-		Dialect: sql.Cockroachdb,
-	})
 	golang.GenerateTypesFile(golang.GenerateTypesFileConfig{
 		Output:  "types.gen.go",
 		Package: "todo",
-		Types:   spec.Types,
-	})
-	golang.GenerateDatabaseFile(golang.GenerateDatabaseFileConfig{
-		Output:  "database/database.gen.go",
-		Package: "database",
 		Types:   spec.Types,
 	})
 	golang.GenerateClientFile(golang.GenerateClientFileConfig{
