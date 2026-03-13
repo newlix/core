@@ -135,9 +135,10 @@ func call(client *http.Client, authToken, endpoint, method string, in, out inter
 `))
 
 	for i, m := range mm {
+		name := GoName(m.CamelName)
 		out(w, "// %s", m.Description)
-		out(w, "func (c *Client) %s(in %sInput) (%sOutput, error) {", m.CamelName, m.CamelName, m.CamelName)
-		out(w, "	var out %sOutput", m.CamelName)
+		out(w, "func (c *Client) %s(in %sInput) (%sOutput, error) {", name, name, name)
+		out(w, "	var out %sOutput", name)
 		out(w, "	return out, call(c.HTTPClient, c.AuthToken, c.URL, %q, in, &out)", m.Name)
 		out(w, "}")
 		if i < len(mm)-1 {

@@ -6,11 +6,36 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 
 	"github.com/newlix/core"
 	"github.com/newlix/core/generators/common"
 )
+
+// goInitialisms maps uppercase initialisms recognized by Go conventions.
+var goInitialisms = map[string]bool{
+	"ID": true, "URL": true, "HTTP": true, "API": true,
+	"JSON": true, "XML": true, "SQL": true, "HTML": true,
+	"CSS": true, "IP": true, "TCP": true, "UDP": true,
+	"RPC": true, "SSH": true, "TLS": true, "TTL": true,
+	"UUID": true, "ASCII": true, "UTF8": true, "ACL": true,
+	"EOF": true, "QPS": true, "DNS": true,
+}
+
+var camelWordRe = regexp.MustCompile(`[A-Z][a-z]*`)
+
+// GoName converts a CamelCase name to Go-idiomatic form by uppercasing initialisms.
+// e.g. "UserId" → "UserID", "HttpUrl" → "HTTPURL", "ApiKey" → "APIKey"
+func GoName(name string) string {
+	return camelWordRe.ReplaceAllStringFunc(name, func(word string) string {
+		upper := strings.ToUpper(word)
+		if goInitialisms[upper] {
+			return upper
+		}
+		return word
+	})
+}
 
 var DefaultTags = []string{"json", "db"}
 
@@ -44,11 +69,20 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 
 	out(w, "package %s", PackageName(c.Package))
 	out(w, `import "encoding/json"`)
+	needsTime := false
 	for _, t := range c.Types {
-		if t.Name == core.Time.Name {
-			out(w, `import "encoding/json"`)
+		for _, f := range t.Fields {
+			if f.Type.Name == core.Time.Name {
+				needsTime = true
+				break
+			}
+		}
+		if needsTime {
 			break
 		}
+	}
+	if needsTime {
+		out(w, `import "time"`)
 	}
 	out(w, `
 func ptr[T any](x T) *T {
@@ -95,42 +129,45 @@ func GenerateImports(w io.Writer, pkg string, tt []core.Type) {
 func GenerateTypes(w io.Writer, pkg string, tt []core.Type, tags []string) {
 	for _, t := range tt {
 		out(w, "// %s", t.Description)
-		out(w, "type %s struct {", t.CamelName)
+		out(w, "type %s struct {", GoName(t.CamelName))
 		writeFields(w, pkg, t.Fields, tags)
 		out(w, "}")
 
-		GenerateJSONMashlerIfNeeded(w, t, pkg, tags)
+		GenerateJSONMarshalerIfNeeded(w, t, pkg, tags)
 
 	}
 }
 
-func GenerateJSONMashlerIfNeeded(w io.Writer, t core.Type, pkg string, tags []string) {
+func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []string) {
+	name := GoName(t.CamelName)
 	out(w, "")
-	out(w, "func (p %s) MarshalJSON() ([]byte, error) {", t.CamelName)
+	out(w, "func (p %s) MarshalJSON() ([]byte, error) {", name)
 	writeAliasType(w, pkg, t, tags)
 	out(w, "	return json.Marshal(&Alias{")
 	for _, f := range t.Fields {
+		fn := GoName(f.CamelName)
 		if f.Type.GoType == "*time.Time" {
-			out(w, "		%s: p.%s.Unix(),", f.CamelName, f.CamelName)
+			out(w, "		%s: p.%s.Unix(),", fn, fn)
 		} else {
-			out(w, "		%s: p.%s,", f.CamelName, f.CamelName)
+			out(w, "		%s: p.%s,", fn, fn)
 		}
 	}
 	out(w, "	})")
 	out(w, "}")
 	out(w, "")
 
-	out(w, "func (p *%s) UnmarshalJSON(data []byte) error {", t.CamelName)
+	out(w, "func (p *%s) UnmarshalJSON(data []byte) error {", name)
 	writeAliasType(w, pkg, t, tags)
 	out(w, "	var tmp Alias")
 	out(w, "	if err := json.Unmarshal(data, &tmp); err != nil {")
 	out(w, "		return err")
 	out(w, "	}")
 	for _, f := range t.Fields {
+		fn := GoName(f.CamelName)
 		if f.Type.GoType == "*time.Time" {
-			out(w, "	p.%s = ptr(time.Unix(tmp.%s, 0))", f.CamelName, f.CamelName)
+			out(w, "	p.%s = ptr(time.Unix(tmp.%s, 0))", fn, fn)
 		} else {
-			out(w, "	p.%s = tmp.%s", f.CamelName, f.CamelName)
+			out(w, "	p.%s = tmp.%s", fn, fn)
 		}
 	}
 	out(w, "	return nil")
@@ -141,11 +178,12 @@ func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method, tt []core.Ty
 
 	// methods
 	for i, m := range mm {
-		out(w, "type %sInput struct {", m.CamelName)
+		name := GoName(m.CamelName)
+		out(w, "type %sInput struct {", name)
 		writeFields(w, pkg, m.Inputs, tags)
 		out(w, "}")
 		out(w, "")
-		out(w, "type %sOutput struct {", m.CamelName)
+		out(w, "type %sOutput struct {", name)
 		writeFields(w, pkg, m.Outputs, tags)
 		out(w, "}")
 		if i < len(mm)-1 {
@@ -164,7 +202,7 @@ func writeAliasType(w io.Writer, pkg string, t core.Type, tags []string) {
 func writeFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
 	for i, f := range ff {
 		out(w, "	// %s", f.Description)
-		out(w, "	%s %s %s", f.CamelName, FieldGoType(pkg, f, false), goTags(f.Name, tags))
+		out(w, "	%s %s %s", GoName(f.CamelName), FieldGoType(pkg, f, false), goTags(f.Name, tags))
 		if i < len(ff)-1 {
 			fmt.Fprintf(w, "\n")
 		}
@@ -173,7 +211,7 @@ func writeFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
 
 func writeAliasFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
 	for _, f := range ff {
-		out(w, "		%s %s %s", f.CamelName, FieldGoType(pkg, f, true), goTags(f.Name, tags))
+		out(w, "		%s %s %s", GoName(f.CamelName), FieldGoType(pkg, f, true), goTags(f.Name, tags))
 	}
 }
 

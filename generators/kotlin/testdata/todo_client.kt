@@ -41,20 +41,20 @@ class TodoClient(val endpoint: String) {
         }
     }
 
-	// AddItem adds an item to the list.
-	suspend fun addItem(input: AddItemInput): AddItemOutput {
-		return call("add_item", input)
-	}
+    // AddItem adds an item to the list.
+    suspend fun addItem(input: AddItemInput): AddItemOutput {
+        return call("add_item", input)
+    }
 
-	// GetItems returns all items in the list.
-	suspend fun getItems(input: GetItemsInput): GetItemsOutput {
-		return call("get_items", input)
-	}
+    // GetItems returns all items in the list.
+    suspend fun getItems(input: GetItemsInput): GetItemsOutput {
+        return call("get_items", input)
+    }
 
-	// RemoveItem removes an item from the to-do list.
-	suspend fun removeItem(input: RemoveItemInput): RemoveItemOutput {
-		return call("remove_item", input)
-	}
+    // RemoveItem removes an item from the to-do list.
+    suspend fun removeItem(input: RemoveItemInput): RemoveItemOutput {
+        return call("remove_item", input)
+    }
 
 }
 

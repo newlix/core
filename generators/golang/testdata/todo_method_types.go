@@ -16,7 +16,7 @@ type GetItemsOutput struct {
 
 type RemoveItemInput struct {
 	// the id of the item to remove.
-	Id int `json:"id"`
+	ID int `json:"id"`
 }
 
 type RemoveItemOutput struct {

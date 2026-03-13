@@ -1,8 +1,8 @@
 // Item is a to-do item.
 @Serializable
 data class Item(
-    @SerialName("id") var id: Int = 0,
-    @SerialName("text") var text: String = "",
-    @SerialName("created_at") var createdAt: Date = Date(),
+    @SerialName("id") val id: Int = 0,
+    @SerialName("text") val text: String = "",
+    @SerialName("created_at") val createdAt: Date = Date(),
 )
 

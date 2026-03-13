@@ -2,78 +2,81 @@
 import Foundation
 
 struct CoreError: LocalizedError {
-    let status: Int
-    let message: String
-
-    var errorDescription: String? {
-        message
-    }
+	let status: Int
+	let message: String
+	
+	var errorDescription: String? {
+		message
+	}
 }
 
 // TodoClient is the API client.
 struct TodoClient {
-    // encoder is the conventional json encoder
-    private let encoder = JSONEncoder()
+	// encoder is the conventional json encoder
+	private let encoder = JSONEncoder()
+	
+	// decoder is the conventional json decoder
+	private let decoder = JSONDecoder()
+	
+	// endpoint is the required API endpoint address.
+	let endpoint: String
 
-    // decoder is the conventional json decoder
-    private let decoder = JSONDecoder()
+	// AuthToken is an optional authentication token.
+	var authToken: String?
 
-    // endpoint is the required API endpoint address.
-    let endpoint: String
+	// session is the client used for making requests, defaulting to URLSession.shared.
+	let session: URLSession = URLSession.shared
 
-    // AuthToken is an optional authentication token.
-    var authToken: String?
+	private func call<Input, Output>(method: String, input: Input) async throws -> Output where Input: Codable, Output: Codable {
+		let url = URL(string: endpoint + "/" + method)!
+		
+		let body = try self.encoder.encode(input)
+		
+		var req = URLRequest(url: url)
+		req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+		if let tok = self.authToken {
+			req.setValue("Bearer " + tok, forHTTPHeaderField: "Authorization")
+		}
+		req.httpMethod = "POST"
+		req .httpBody = body
+		
+		let (data, res) =  try await self.session.data(for: req )
+	   
+		let r = res  as! HTTPURLResponse
+		
+		if r.statusCode >= 300 {
+			let body = String(decoding: data, as: UTF8.self)
+			let err = CoreError(status: r.statusCode, message: body)
+			throw err
+		}
+		return try self.decoder.decode(Output.self, from: data)
+	}
 
-    // session is the client used for making requests, defaulting to URLSession.shared.
-    let session: URLSession = .shared
 
-    private func call<Input, Output>(method: String, input: Input) async throws -> Output where Input: Codable, Output: Codable {
-        let url = URL(string: endpoint + "/" + method)!
+	// AddItem adds an item to the list.
+	func addItem(input: AddItemInput) async throws -> AddItemOutput {
+		return try await call(method: "add_item", input: input)
+	}
 
-        let body = try encoder.encode(input)
+	// GetItems returns all items in the list.
+	func getItems(input: GetItemsInput) async throws -> GetItemsOutput {
+		return try await call(method: "get_items", input: input)
+	}
 
-        var req = URLRequest(url: url)
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let tok = authToken {
-            req.setValue("Bearer " + tok, forHTTPHeaderField: "Authorization")
-        }
-        req.httpMethod = "POST"
-        req.httpBody = body
+	// RemoveItem removes an item from the to-do list.
+	func removeItem(input: RemoveItemInput) async throws -> RemoveItemOutput {
+		return try await call(method: "remove_item", input: input)
+	}
 
-        let (data, res) = try await session.data(for: req)
-
-        let r = res as! HTTPURLResponse
-
-        if r.statusCode >= 300 {
-            let body = String(decoding: data, as: UTF8.self)
-            let err = CoreError(status: r.statusCode, message: body)
-            throw err
-        }
-        return try decoder.decode(Output.self, from: data)
-    }
-
-    // AddItem adds an item to the list.
-    func addItem(input: AddItemInput) async throws -> AddItemOutput {
-        return try await call(method: "add_item", input: input)
-    }
-
-    // GetItems returns all items in the list.
-    func getItems(input: GetItemsInput) async throws -> GetItemsOutput {
-        return try await call(method: "get_items", input: input)
-    }
-
-    // RemoveItem removes an item from the to-do list.
-    func removeItem(input: RemoveItemInput) async throws -> RemoveItemOutput {
-        return try await call(method: "remove_item", input: input)
-    }
 }
 
 struct AddItemInput: Codable {
     // the item to add.
-    var item: Item = .init()
+    var item: Item = Item()
+
 
     enum CodingKeys: String, CodingKey {
-        case item
+        case item = "item"
     }
 }
 
@@ -83,35 +86,24 @@ extension AddItemInput {
         if let item = try container.decodeIfPresent(Item.self, forKey: .item) {
             self.item = item
         }
+
     }
 }
 
 struct AddItemOutput: Codable {
-    enum CodingKeys: String, CodingKey {}
-}
-
-extension AddItemOutput {
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-    }
 }
 
 struct GetItemsInput: Codable {
-    enum CodingKeys: String, CodingKey {}
+
 }
 
-extension GetItemsInput {
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-    }
-}
 
 struct GetItemsOutput: Codable {
     // Items is the list of to-do items.
     var items: [Item] = []
 
     enum CodingKeys: String, CodingKey {
-        case items
+        case items = "items"
     }
 }
 
@@ -121,15 +113,16 @@ extension GetItemsOutput {
         if let items = try container.decodeIfPresent([Item].self, forKey: .items) {
             self.items = items
         }
+
     }
 }
-
 struct RemoveItemInput: Codable {
     // the id of the item to remove.
     var id: Int = 0
 
+
     enum CodingKeys: String, CodingKey {
-        case id
+        case id = "id"
     }
 }
 
@@ -139,15 +132,16 @@ extension RemoveItemInput {
         if let id = try container.decodeIfPresent(Int.self, forKey: .id) {
             self.id = id
         }
+
     }
 }
 
 struct RemoveItemOutput: Codable {
     // the item removed.
-    var item: Item = .init()
+    var item: Item = Item()
 
     enum CodingKeys: String, CodingKey {
-        case item
+        case item = "item"
     }
 }
 
@@ -157,5 +151,6 @@ extension RemoveItemOutput {
         if let item = try container.decodeIfPresent(Item.self, forKey: .item) {
             self.item = item
         }
+
     }
 }

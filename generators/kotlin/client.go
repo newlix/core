@@ -102,10 +102,10 @@ func GenerateClient(w io.Writer, mm []core.Method, client string) {
 
 func writeMethods(w io.Writer, mm []core.Method) {
 	for _, m := range mm {
-		out(w, "	// %s", m.Description)
-		out(w, "	suspend fun %s(input: %sInput): %sOutput {", m.LowerCamelName, m.CamelName, m.CamelName)
-		out(w, `		return call(%q, input)`, m.Name)
-		out(w, "	}")
+		out(w, "    // %s", m.Description)
+		out(w, "    suspend fun %s(input: %sInput): %sOutput {", m.LowerCamelName, m.CamelName, m.CamelName)
+		out(w, `        return call(%q, input)`, m.Name)
+		out(w, "    }")
 		out(w, "")
 	}
 }

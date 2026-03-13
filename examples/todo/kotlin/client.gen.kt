@@ -6,9 +6,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+
 
 data class CoreError(
     val status: Int,
@@ -53,48 +56,48 @@ class TodoClient(val endpoint: String) {
         }
     }
 
-	// AddItem adds an item to the list.
-	suspend fun addItem(input: AddItemInput): AddItemOutput {
-		return call("add_item", input)
-	}
+    // AddItem adds an item to the list.
+    suspend fun addItem(input: AddItemInput): AddItemOutput {
+        return call("add_item", input)
+    }
 
-	// GetItems returns all items in the list.
-	suspend fun getItems(input: GetItemsInput): GetItemsOutput {
-		return call("get_items", input)
-	}
+    // GetItems returns all items in the list.
+    suspend fun getItems(input: GetItemsInput): GetItemsOutput {
+        return call("get_items", input)
+    }
 
-	// RemoveItem removes an item from the to-do list.
-	suspend fun removeItem(input: RemoveItemInput): RemoveItemOutput {
-		return call("remove_item", input)
-	}
+    // RemoveItem removes an item from the to-do list.
+    suspend fun removeItem(input: RemoveItemInput): RemoveItemOutput {
+        return call("remove_item", input)
+    }
 
 }
 
 @Serializable
 data class AddItemInput(
-    @SerialName("item") var item: Item = Item(),
+    @SerialName("item") val item: Item = Item(),
 )
 
 @Serializable
-data class AddItemOutput(
+class AddItemOutput(
 )
 
 @Serializable
-data class GetItemsInput(
+class GetItemsInput(
 )
 
 @Serializable
 data class GetItemsOutput(
-    @SerialName("items") var items: MutableList<Item> = mutableListOf(),
+    @SerialName("items") val items: List<Item> = emptyList(),
 )
 
 @Serializable
 data class RemoveItemInput(
-    @SerialName("id") var id: Int = 0,
+    @SerialName("id") val id: Int = 0,
 )
 
 @Serializable
 data class RemoveItemOutput(
-    @SerialName("item") var item: Item = Item(),
+    @SerialName("item") val item: Item = Item(),
 )
 

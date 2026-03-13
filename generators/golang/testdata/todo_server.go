@@ -6,7 +6,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := core.NewRequestContext(r.Context(), r)
-	var res interface{}
+	var res any
 	var err error
 	switch r.URL.Path {
 	case "/add_item":
@@ -46,5 +46,4 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	core.WriteResponse(w, res)
-	return
 }

@@ -51,7 +51,7 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 	out(w, "		return")
 	out(w, "	}")
 	out(w, "	ctx := core.NewRequestContext(r.Context(), r)")
-	out(w, "	var res interface{}")
+	out(w, "	var res any")
 	out(w, "	var err error")
 	out(w, "	switch r.URL.Path {")
 
@@ -59,13 +59,14 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 
 		out(w, "	case \"/%s\":", m.Name)
 		// parse input
-		out(w, "		var in %sInput", m.CamelName)
-		out(w, "		var out %sOutput", m.CamelName)
+		name := GoName(m.CamelName)
+		out(w, "		var in %sInput", name)
+		out(w, "		var out %sOutput", name)
 		out(w, "		err = core.ReadRequest(r, &in)")
 		out(w, "		if err != nil {")
 		out(w, "			break")
 		out(w, "		}")
-		out(w, "		out, err = s.%s(ctx, in)", m.CamelName)
+		out(w, "		out, err = s.%s(ctx, in)", GoName(m.CamelName))
 		out(w, "		res = out")
 	}
 	out(w, "	default:")
@@ -78,6 +79,5 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 	out(w, "	}")
 	out(w, "")
 	out(w, "	core.WriteResponse(w, res)")
-	out(w, "	return")
 	out(w, "}")
 }

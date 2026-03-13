@@ -8,7 +8,30 @@ import (
 	"github.com/newlix/core/examples/todo/spec"
 	"github.com/newlix/core/generators/golang"
 	"github.com/google/go-cmp/cmp"
+	"github.com/tj/assert"
 )
+
+func TestGoName(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"Id", "ID"},
+		{"UserId", "UserID"},
+		{"HttpUrl", "HTTPURL"},
+		{"ApiKey", "APIKey"},
+		{"Item", "Item"},
+		{"AddItem", "AddItem"},
+		{"GetItems", "GetItems"},
+		{"CreatedAt", "CreatedAt"},
+		{"JsonRpc", "JSONRPC"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			assert.Equal(t, tt.want, golang.GoName(tt.input))
+		})
+	}
+}
 
 func TestGenerateTypes(t *testing.T) {
 	b, err := os.ReadFile("testdata/todo_types.go")

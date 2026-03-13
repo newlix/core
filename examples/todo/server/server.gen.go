@@ -3,36 +3,34 @@ package server
 
 import (
 	"net/http"
-
 	"github.com/newlix/core"
-
-	"github.com/newlix/core/examples/todo"
 )
-
+import "github.com/newlix/core/examples/todo"
 type AddItemInput struct {
 	// the item to add.
-	Item todo.Item `json:"item" db:"item"`
+	Item todo.Item `json:"item"`
 }
 
-type AddItemOutput struct{}
+type AddItemOutput struct {
+}
 
-type GetItemsInput struct{}
+type GetItemsInput struct {
+}
 
 type GetItemsOutput struct {
 	// Items is the list of to-do items.
-	Items []todo.Item `json:"items" db:"items"`
+	Items []todo.Item `json:"items"`
 }
 
 type RemoveItemInput struct {
 	// the id of the item to remove.
-	Id int `json:"id" db:"id"`
+	ID int `json:"id"`
 }
 
 type RemoveItemOutput struct {
 	// the item removed.
-	Item todo.Item `json:"item" db:"item"`
+	Item todo.Item `json:"item"`
 }
-
 // ServeHTTP implementation.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -41,7 +39,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := core.NewRequestContext(r.Context(), r)
-	var res interface{}
+	var res any
 	var err error
 	switch r.URL.Path {
 	case "/add_item":
@@ -81,5 +79,4 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	core.WriteResponse(w, res)
-	return
 }

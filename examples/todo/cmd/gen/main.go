@@ -10,7 +10,7 @@ import (
 func main() {
 	golang.GenerateTypesFile(golang.GenerateTypesFileConfig{
 		Output:  "types.gen.go",
-		Package: "todo",
+		Package: "github.com/newlix/core/examples/todo",
 		Types:   spec.Types,
 	})
 	golang.GenerateClientFile(golang.GenerateClientFileConfig{
