@@ -1,28 +1,28 @@
 @Serializable
 data class AddItemInput(
-    @SerialName("item") var item: Item = Item(),
+    @SerialName("item") val item: Item = Item(),
 )
 
 @Serializable
-data class AddItemOutput(
+class AddItemOutput(
 )
 
 @Serializable
-data class GetItemsInput(
+class GetItemsInput(
 )
 
 @Serializable
 data class GetItemsOutput(
-    @SerialName("items") var items: MutableList<Item> = mutableListOf(),
+    @SerialName("items") val items: List<Item> = emptyList(),
 )
 
 @Serializable
 data class RemoveItemInput(
-    @SerialName("id") var id: Int = 0,
+    @SerialName("id") val id: Int = 0,
 )
 
 @Serializable
 data class RemoveItemOutput(
-    @SerialName("item") var item: Item = Item(),
+    @SerialName("item") val item: Item = Item(),
 )
 

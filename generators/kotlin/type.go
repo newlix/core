@@ -54,9 +54,9 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method, tt []core.Type) {
 		// inputs
 		out(w, "@Serializable")
 		if len(m.Inputs) > 0 {
-			fmt.Print(w, "data ")
+			fmt.Fprint(w, "data ")
 		}
-		out(w, "data class %sInput(", m.CamelName)
+		out(w, "class %sInput(", m.CamelName)
 		writeFields(w, m.Inputs)
 		out(w, ")")
 		out(w, "")
@@ -64,9 +64,9 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method, tt []core.Type) {
 		// outputs
 		out(w, "@Serializable")
 		if len(m.Outputs) > 0 {
-			fmt.Print(w, "data ")
+			fmt.Fprint(w, "data ")
 		}
-		out(w, "data class %sOutput(", m.CamelName)
+		out(w, "class %sOutput(", m.CamelName)
 		writeFields(w, m.Outputs)
 		out(w, ")")
 		out(w, "")
@@ -77,7 +77,7 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method, tt []core.Type) {
 // writeFields to writer.
 func writeFields(w io.Writer, fs []core.Field) {
 	for _, f := range fs {
-		out(w, "    @SerialName(\"%s\") var %s: %s = %s,", f.Name, f.LowerCamelName, kotlinType(f), kotlinDefault(f))
+		out(w, "    @SerialName(\"%s\") val %s: %s = %s,", f.Name, f.LowerCamelName, kotlinType(f), kotlinDefault(f))
 	}
 }
 
@@ -87,7 +87,7 @@ func kotlinType(f core.Field) string {
 		t = f.Type.CamelName
 	}
 	if f.IsArray {
-		return "MutableList<" + t + ">"
+		return "List<" + t + ">"
 	}
 	return t
 }
@@ -98,7 +98,7 @@ func kotlinDefault(f core.Field) string {
 		s = f.Type.CamelName + "()"
 	}
 	if f.IsArray {
-		return "mutableListOf()"
+		return "emptyList()"
 	}
 	return s
 }
