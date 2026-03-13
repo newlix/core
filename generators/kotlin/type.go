@@ -41,7 +41,10 @@ func GenerateTypes(w io.Writer, ts []core.Type) {
 	for _, t := range ts {
 		out(w, "// %s", t.Description)
 		out(w, "@Serializable")
-		out(w, "data class %s(", t.CamelName)
+		if len(t.Fields) > 0 {
+			fmt.Fprint(w, "data ")
+		}
+		out(w, "class %s(", t.CamelName)
 		writeFields(w, t.Fields)
 		out(w, ")")
 		out(w, "")
