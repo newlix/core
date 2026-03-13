@@ -25,21 +25,25 @@ struct TodoClient {
 	let session: URLSession = URLSession.shared
 
 	private func call<Input, Output>(method: String, input: Input) async throws -> Output where Input: Codable, Output: Codable {
-		let url = URL(string: endpoint + "/" + method)!
-		
+		guard let url = URL(string: endpoint + "/" + method) else {
+			throw CoreError(status: 0, message: "Invalid URL: \(endpoint)/\(method)")
+		}
+
 		let body = try self.encoder.encode(input)
-		
+
 		var req = URLRequest(url: url)
 		req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		if let tok = self.authToken {
 			req.setValue("Bearer " + tok, forHTTPHeaderField: "Authorization")
 		}
 		req.httpMethod = "POST"
-		req .httpBody = body
-		
-		let (data, res) =  try await self.session.data(for: req )
-	   
-		let r = res  as! HTTPURLResponse
+		req.httpBody = body
+
+		let (data, res) = try await self.session.data(for: req)
+
+		guard let r = res as? HTTPURLResponse else {
+			throw CoreError(status: 0, message: "Unexpected response type")
+		}
 		
 		if r.statusCode >= 300 {
 			let body = String(decoding: data, as: UTF8.self)
