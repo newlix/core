@@ -97,7 +97,7 @@ var Int = Type{
 	GoType:          "int",
 	SwiftType:       "Int",
 	SwiftDefault:    "0",
-	KotlinType:      "Int",
+	KotlinType:      "Long",
 	KotlinDefault: "0",
 	isBuiltin:     true,
 }

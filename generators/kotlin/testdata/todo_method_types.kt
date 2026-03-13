@@ -18,7 +18,7 @@ data class GetItemsOutput(
 
 @Serializable
 data class RemoveItemInput(
-    @SerialName("id") val id: Int = 0,
+    @SerialName("id") val id: Long = 0,
 )
 
 @Serializable
