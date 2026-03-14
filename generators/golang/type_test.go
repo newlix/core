@@ -26,6 +26,23 @@ func mustInitMethods(t *testing.T, mm ...core.Method) []core.Method {
 	return result
 }
 
+func TestPackageName(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"github.com/example/foo", "foo"},
+		{"github.com/example/bar/baz", "baz"},
+		{`myalias "github.com/example/foo"`, "myalias"},
+		{"simple", "simple"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.want, func(t *testing.T) {
+			assert.Equal(t, tt.want, golang.PackageName(tt.input))
+		})
+	}
+}
+
 func TestGoName(t *testing.T) {
 	tests := []struct {
 		input string

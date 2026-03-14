@@ -36,7 +36,7 @@ func BadRequest(message string) error {
 func WriteError(w http.ResponseWriter, err error) {
 	c := 500
 	var e ServerError
-	if errors.As(err, &e) {
+	if errors.As(err, &e) && e.Status != 0 {
 		c = e.Status
 	}
 	http.Error(w, err.Error(), c)

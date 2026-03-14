@@ -57,7 +57,7 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 		}
 	}
 
-	CheckPackage(c.Package, c.Types)
+	checkPackage(c.Package, c.Types)
 
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
 		log.Fatal(err)
@@ -78,7 +78,7 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 
 }
 
-func CheckPackage(pkg string, tt []core.Type) {
+func checkPackage(pkg string, tt []core.Type) {
 	for _, t := range tt {
 		if t.GoPackage != pkg {
 			log.Fatalf("%s belongs to %q not %q", t.Name, t.GoPackage, pkg)
