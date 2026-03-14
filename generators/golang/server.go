@@ -60,14 +60,15 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 	for _, m := range mm {
 
 		out(w, "	case \"/%s\":", m.Name)
-		// parse input
 		name := GoName(m.CamelName)
 		out(w, "		var in %sInput", name)
 		out(w, "		var out %sOutput", name)
-		out(w, "		err = core.ReadRequest(r, &in)")
-		out(w, "		if err != nil {")
-		out(w, "			break")
-		out(w, "		}")
+		if len(m.Inputs) > 0 {
+			out(w, "		err = core.ReadRequest(r, &in)")
+			out(w, "		if err != nil {")
+			out(w, "			break")
+			out(w, "		}")
+		}
 		out(w, "		out, err = s.%s(ctx, in)", name)
 		out(w, "		res = out")
 	}

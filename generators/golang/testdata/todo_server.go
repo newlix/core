@@ -21,10 +21,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/get_items":
 		var in GetItemsInput
 		var out GetItemsOutput
-		err = core.ReadRequest(r, &in)
-		if err != nil {
-			break
-		}
 		out, err = s.GetItems(ctx, in)
 		res = out
 	case "/remove_item":
