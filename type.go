@@ -20,9 +20,9 @@ type Type struct {
 	SwiftType       string   `json:"swift_type"`
 	SwiftDefault    string   `json:"swift_default"`
 	KotlinType      string   `json:"kotlin_type"`
-	KotlinDefault string `json:"kotlin_default"`
-	SqlcType      string `json:"sqlc_type"`
-	isInitialized bool
+	KotlinDefault   string   `json:"kotlin_default"`
+	SqlcType        string   `json:"sqlc_type"`
+	isInitialized   bool
 	isBuiltin       bool
 }
 
@@ -68,12 +68,10 @@ func InitTypes(tt ...Type) []Type {
 }
 
 var String = Type{
-	Name:            "string",
-	Description:     "built-in string",
-	Fields:          nil,
-	PrimaryKey:      nil,
-	GoType:          "string",
-	SwiftType:       "String",
+	Name:          "string",
+	Description:   "built-in string",
+	GoType:        "string",
+	SwiftType:     "String",
 	SwiftDefault:  `""`,
 	KotlinType:    "String",
 	KotlinDefault: `""`,
@@ -82,56 +80,48 @@ var String = Type{
 }
 
 var Int = Type{
-	Name:            "int",
-	Description:     "built-in integer",
-	Fields:          nil,
-	PrimaryKey:      nil,
-	GoType:          "int",
-	SwiftType:       "Int",
-	SwiftDefault:    "0",
-	KotlinType:      "Long",
+	Name:          "int",
+	Description:   "built-in integer",
+	GoType:        "int",
+	SwiftType:     "Int",
+	SwiftDefault:  "0",
+	KotlinType:    "Long",
 	KotlinDefault: "0",
 	SqlcType:      "BIGINT",
 	isBuiltin:     true,
 }
 
 var Bool = Type{
-	Name:            "bool",
-	Description:     "built-in bool",
-	Fields:          nil,
-	PrimaryKey:      nil,
-	GoType:          "bool",
-	SwiftType:       "Bool",
-	SwiftDefault:    "false",
-	KotlinType:      "Boolean",
+	Name:          "bool",
+	Description:   "built-in bool",
+	GoType:        "bool",
+	SwiftType:     "Bool",
+	SwiftDefault:  "false",
+	KotlinType:    "Boolean",
 	KotlinDefault: "false",
 	SqlcType:      "BOOLEAN",
 	isBuiltin:     true,
 }
 
 var Float = Type{
-	Name:            "float",
-	Description:     "built-in float",
-	Fields:          nil,
-	PrimaryKey:      nil,
-	GoType:          "float64",
-	SwiftType:       "Double",
-	SwiftDefault:    "0.0",
-	KotlinType:      "Double",
+	Name:          "float",
+	Description:   "built-in float",
+	GoType:        "float64",
+	SwiftType:     "Double",
+	SwiftDefault:  "0.0",
+	KotlinType:    "Double",
 	KotlinDefault: "0.0",
 	SqlcType:      "DOUBLE PRECISION",
 	isBuiltin:     true,
 }
 
 var Time = Type{
-	Name:            "time",
-	Description:     "built-in date",
-	Fields:          nil,
-	PrimaryKey:      nil,
-	GoType:          "*time.Time",
-	SwiftType:       "Date",
-	SwiftDefault:    "Date()",
-	KotlinType:      "Date",
+	Name:          "time",
+	Description:   "built-in time",
+	GoType:        "*time.Time",
+	SwiftType:     "Date",
+	SwiftDefault:  "Date()",
+	KotlinType:    "Date",
 	KotlinDefault: "Date()",
 	SqlcType:      "TIMESTAMPTZ",
 	isBuiltin:     true,
