@@ -8,7 +8,6 @@ import (
 var GetItems = core.Method{
 	Name:        "get_items",
 	Description: "GetItems returns all items in the list.",
-	Inputs:      nil,
 	Outputs: []core.Field{
 		{
 			Name:        "items",

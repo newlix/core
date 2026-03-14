@@ -95,37 +95,37 @@ func hasArray(ff []core.Field) bool {
 // builtinOutputFields expands composite output fields into their builtin sub-fields.
 // If the original field is an array, the expanded sub-fields inherit IsArray.
 func builtinOutputFields(m core.Method, tt []core.Type) []core.Field {
-	var out []core.Field
+	var fields []core.Field
 	for _, f := range m.Outputs {
 		if f.Type.IsBuiltin() {
-			out = append(out, f)
+			fields = append(fields, f)
 		} else {
 			t := findType(f.Type.Name, tt)
 			for _, sf := range core.BuiltinTypeFields(t.Fields) {
 				if f.IsArray {
 					sf.IsArray = true
 				}
-				out = append(out, sf)
+				fields = append(fields, sf)
 			}
 		}
 	}
-	return out
+	return fields
 }
 
 // expandInputFields expands composite input fields into their builtin sub-fields.
 func expandInputFields(inputs []core.Field, tt []core.Type) []core.Field {
-	var out []core.Field
+	var fields []core.Field
 	for _, f := range inputs {
 		if f.Type.IsBuiltin() {
-			out = append(out, f)
+			fields = append(fields, f)
 		} else {
 			t := findType(f.Type.Name, tt)
 			for _, sf := range core.BuiltinTypeFields(t.Fields) {
-				out = append(out, sf)
+				fields = append(fields, sf)
 			}
 		}
 	}
-	return out
+	return fields
 }
 
 func findType(name string, tt []core.Type) core.Type {
@@ -173,11 +173,11 @@ func findTableForInputs(inputs []core.Field, tt []core.Type) string {
 }
 
 func columnNames(ff []core.Field) []string {
-	var out []string
+	var cols []string
 	for _, f := range ff {
-		out = append(out, f.Name)
+		cols = append(cols, f.Name)
 	}
-	return out
+	return cols
 }
 
 func sqlcParam(name string) string {

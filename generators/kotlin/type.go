@@ -1,7 +1,6 @@
 package kotlin
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -43,10 +42,11 @@ func GenerateTypes(w io.Writer, ts []core.Type) {
 	for _, t := range ts {
 		out(w, "// %s", t.Description)
 		out(w, "@Serializable")
+		prefix := ""
 		if len(t.Fields) > 0 {
-			fmt.Fprint(w, "data ")
+			prefix = "data "
 		}
-		out(w, "class %s(", t.CamelName)
+		out(w, "%sclass %s(", prefix, t.CamelName)
 		writeFields(w, t.Fields)
 		out(w, ")")
 		out(w, "")
@@ -57,21 +57,23 @@ func GenerateTypes(w io.Writer, ts []core.Type) {
 func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 	for _, m := range ms {
 		// inputs
-		out(w, "@Serializable")
+		prefix := ""
 		if len(m.Inputs) > 0 {
-			fmt.Fprint(w, "data ")
+			prefix = "data "
 		}
-		out(w, "class %sInput(", m.CamelName)
+		out(w, "@Serializable")
+		out(w, "%sclass %sInput(", prefix, m.CamelName)
 		writeFields(w, m.Inputs)
 		out(w, ")")
 		out(w, "")
 
 		// outputs
-		out(w, "@Serializable")
+		prefix = ""
 		if len(m.Outputs) > 0 {
-			fmt.Fprint(w, "data ")
+			prefix = "data "
 		}
-		out(w, "class %sOutput(", m.CamelName)
+		out(w, "@Serializable")
+		out(w, "%sclass %sOutput(", prefix, m.CamelName)
 		writeFields(w, m.Outputs)
 		out(w, ")")
 		out(w, "")

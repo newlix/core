@@ -24,6 +24,9 @@ func InitMethods(mm ...Method) ([]Method, error) {
 	})
 	names := map[string]struct{}{}
 	for _, m := range mm {
+		if m.Name == "" {
+			return nil, fmt.Errorf("method name must not be empty")
+		}
 		if _, ok := names[m.Name]; ok {
 			return nil, fmt.Errorf("duplicate method name = %q", m.Name)
 		}

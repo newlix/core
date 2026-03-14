@@ -15,5 +15,4 @@ var AddItem = core.Method{
 			Type:        types.Item,
 		},
 	},
-	Outputs: []core.Field{},
 }

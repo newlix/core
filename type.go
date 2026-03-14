@@ -40,6 +40,9 @@ func InitTypes(tt ...Type) ([]Type, error) {
 	})
 	names := map[string]struct{}{}
 	for _, t := range tt {
+		if t.Name == "" {
+			return nil, fmt.Errorf("type name must not be empty")
+		}
 		if _, ok := names[t.Name]; ok {
 			return nil, fmt.Errorf("duplicate type name = %q", t.Name)
 		}
@@ -53,6 +56,9 @@ func InitTypes(tt ...Type) ([]Type, error) {
 }
 
 func initType(t Type) Type {
+	if t.isInitialized {
+		return t
+	}
 	if t.LowerCamelName == "" {
 		t.LowerCamelName = strcase.ToLowerCamel(t.Name)
 	}

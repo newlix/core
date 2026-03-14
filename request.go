@@ -8,8 +8,8 @@ import (
 
 // ReadRequest parses application/json request bodies into value, or returns an error.
 func ReadRequest(r *http.Request, value any) error {
-	mediaType, _, _ := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	if mediaType != "application/json" {
+	mediaType, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err != nil || mediaType != "application/json" {
 		return BadRequest("Unsupported request Content-Type, must be application/json")
 	}
 
