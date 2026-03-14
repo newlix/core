@@ -35,7 +35,7 @@ func GenerateServerFile(c GenerateServerFileConfig) {
 	"github.com/newlix/core"
 )`)
 	GenerateImports(w, c.Package, c.Types)
-	GenerateMethodTypes(w, c.Package, c.Methods, c.Types)
+	GenerateMethodTypes(w, c.Package, c.Methods)
 
 	GenerateServer(w, c.Methods)
 

@@ -46,7 +46,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 		out(w, "import %s.*", c.TypesPackage)
 	}
 	GenerateClient(w, c.Methods, c.Client)
-	GenerateMethodTypes(w, c.Methods, c.Types)
+	GenerateMethodTypes(w, c.Methods)
 }
 
 var start = `data class CoreError(

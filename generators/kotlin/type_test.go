@@ -39,7 +39,7 @@ func TestGenerateMethodTypes(t *testing.T) {
 	}
 	want := string(b)
 	var act bytes.Buffer
-	kotlin.GenerateMethodTypes(&act, spec.Methods, spec.Types)
+	kotlin.GenerateMethodTypes(&act, spec.Methods)
 	got := act.String()
 	w, err := os.Create("testdata/todo_method_types.gen.kt")
 	if err != nil {
@@ -72,7 +72,7 @@ func TestGenerateMethodTypes_EmptyOutputs(t *testing.T) {
 		Description: "health check",
 	})
 	var buf bytes.Buffer
-	kotlin.GenerateMethodTypes(&buf, methods, nil)
+	kotlin.GenerateMethodTypes(&buf, methods)
 	got := buf.String()
 	want := "@Serializable\nclass PingInput(\n)\n\n@Serializable\nclass PingOutput(\n)\n\n"
 	if got != want {

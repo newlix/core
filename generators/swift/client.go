@@ -30,7 +30,7 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 	out(w, "")
 
 	GenerateClient(w, c.Methods, c.Client)
-	GenerateMethodTypes(w, c.Methods, c.Types)
+	GenerateMethodTypes(w, c.Methods)
 
 }
 

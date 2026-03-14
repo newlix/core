@@ -52,7 +52,7 @@ func GenerateTypes(w io.Writer, ts []core.Type) {
 
 }
 
-func GenerateMethodTypes(w io.Writer, ms []core.Method, tt []core.Type) {
+func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 	for _, m := range ms {
 		// inputs
 		out(w, "@Serializable")

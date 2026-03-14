@@ -37,7 +37,7 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 
 `)
 	GenerateImports(w, c.Package, c.Types)
-	GenerateMethodTypes(w, c.Package, c.Methods, c.Types)
+	GenerateMethodTypes(w, c.Package, c.Methods)
 
 	GenerateClient(w, c.Methods)
 

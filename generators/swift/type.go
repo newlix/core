@@ -44,7 +44,7 @@ func GenerateTypes(w io.Writer, tt []core.Type) {
 
 }
 
-func GenerateMethodTypes(w io.Writer, ms []core.Method, ts []core.Type) {
+func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 	// methods
 	for _, m := range ms {
 		out(w, "struct %sInput: Codable {", m.CamelName)

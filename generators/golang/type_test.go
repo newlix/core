@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/newlix/core/examples/todo/spec"
 	"github.com/newlix/core/generators/golang"
-	"github.com/google/go-cmp/cmp"
 	"github.com/tj/assert"
 )
 
@@ -60,7 +60,7 @@ func TestGenerateMethodTypes(t *testing.T) {
 	}
 	want := string(b)
 	var act bytes.Buffer
-	golang.GenerateMethodTypes(&act, "github.com/newlix/core/examples/todo/client", spec.Methods, spec.Types)
+	golang.GenerateMethodTypes(&act, "github.com/newlix/core/examples/todo/client", spec.Methods)
 	got := act.String()
 	w, err := os.Create("testdata/todo_method_types.gen.go")
 	if err != nil {

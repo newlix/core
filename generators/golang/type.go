@@ -175,7 +175,7 @@ func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []
 	out(w, "	return nil")
 	out(w, "}")
 }
-func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method, tt []core.Type) {
+func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method) {
 	tags := []string{"json"}
 
 	// methods

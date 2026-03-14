@@ -38,7 +38,7 @@ func TestGenerateMethodTypes(t *testing.T) {
 	}
 	want := string(b)
 	var act bytes.Buffer
-	swift.GenerateMethodTypes(&act, spec.Methods, spec.Types)
+	swift.GenerateMethodTypes(&act, spec.Methods)
 	got := act.String()
 	w, err := os.Create("testdata/todo_method_types.gen.swift")
 	if err != nil {
