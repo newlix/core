@@ -34,11 +34,13 @@ func GenerateServerFile(c GenerateServerFileConfig) {
 	out(w, "")
 	out(w, `import (
 	"net/http"
+
 	"github.com/newlix/core"
 )`)
+	out(w, "")
 	GenerateImports(w, c.Package, c.Types)
 	GenerateMethodTypes(w, c.Package, c.Methods)
-
+	out(w, "")
 	GenerateServer(w, c.Methods)
 
 }

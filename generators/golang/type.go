@@ -118,11 +118,14 @@ func GenerateImports(w io.Writer, pkg string, tt []core.Type) {
 }
 
 func GenerateTypes(w io.Writer, pkg string, tt []core.Type, tags []string) {
-	for _, t := range tt {
+	for i, t := range tt {
 		out(w, "// %s", t.Description)
 		out(w, "type %s struct {", GoName(t.CamelName))
 		writeFields(w, pkg, t.Fields, tags)
 		out(w, "}")
+		if i < len(tt)-1 {
+			out(w, "")
+		}
 	}
 }
 

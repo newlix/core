@@ -3,8 +3,10 @@ package server
 
 import (
 	"net/http"
+
 	"github.com/newlix/core"
 )
+
 import "github.com/newlix/core/examples/todo"
 
 type AddItemInput struct {
@@ -32,6 +34,7 @@ type RemoveItemOutput struct {
 	// the item removed.
 	Item todo.Item `json:"item"`
 }
+
 // ServeHTTP implementation.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {

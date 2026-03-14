@@ -37,6 +37,7 @@ type RemoveItemOutput struct {
 	// the item removed.
 	Item todo.Item `json:"item"`
 }
+
 // Client is the API client.
 type Client struct {
 	// URL is the required API endpoint address.
