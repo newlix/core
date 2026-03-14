@@ -71,6 +71,7 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 	common.GenerateWarning(w)
 
 	out(w, "package %s", PackageName(c.Package))
+	out(w, "")
 	GenerateImports(w, c.Package, c.Types)
 
 	GenerateTypes(w, c.Package, c.Types, c.Tags)
@@ -110,6 +111,9 @@ func GenerateImports(w io.Writer, pkg string, tt []core.Type) {
 		} else {
 			out(w, "import %q", s)
 		}
+	}
+	if len(imports) > 0 {
+		out(w, "")
 	}
 }
 

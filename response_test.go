@@ -19,8 +19,8 @@ func (d DiscardResponseWriter) Header() http.Header {
 }
 
 // Write implementation.
-func (d DiscardResponseWriter) Write([]byte) (int, error) {
-	return 0, nil
+func (d DiscardResponseWriter) Write(p []byte) (int, error) {
+	return len(p), nil
 }
 
 // WriteHeader implementation.

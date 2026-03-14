@@ -29,16 +29,16 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 	defer w.Close()
 	common.GenerateWarning(w)
 	out(w, "package %s", PackageName(c.Package))
+	out(w, "")
 	out(w, `import (
-  "bytes"
-  "encoding/json"
-  "fmt"
-  "io"
-  "net/http"
-  "strings"
-)
-
-`)
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
+)`)
+	out(w, "")
 	GenerateImports(w, c.Package, c.Types)
 	GenerateMethodTypes(w, c.Package, c.Methods)
 

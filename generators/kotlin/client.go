@@ -31,18 +31,17 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 	common.GenerateWarning(w)
 	out(w, "@file:Suppress(\"unused\")")
 	out(w, "package %s", c.Package)
-	out(w, `
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-
-`)
+	out(w, "")
+	out(w, "import kotlinx.coroutines.Dispatchers")
+	out(w, "import kotlinx.coroutines.withContext")
+	out(w, "import kotlinx.serialization.encodeToString")
+	out(w, "import kotlinx.serialization.json.Json")
+	out(w, "import kotlinx.serialization.SerialName")
+	out(w, "import kotlinx.serialization.Serializable")
+	out(w, "import okhttp3.OkHttpClient")
+	out(w, "import okhttp3.Request")
+	out(w, "import okhttp3.RequestBody.Companion.toRequestBody")
+	out(w, "")
 	if c.TypesPackage != "" {
 		out(w, "import %s.*", c.TypesPackage)
 	}

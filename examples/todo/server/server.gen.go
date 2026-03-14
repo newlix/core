@@ -6,6 +6,7 @@ import (
 	"github.com/newlix/core"
 )
 import "github.com/newlix/core/examples/todo"
+
 type AddItemInput struct {
 	// the item to add.
 	Item todo.Item `json:"item"`
