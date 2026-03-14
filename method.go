@@ -17,7 +17,7 @@ type Method struct {
 	Outputs        []Field `json:"outputs"`
 }
 
-// returns Methods from dir/*.json.
+// InitMethods initializes and validates methods.
 func InitMethods(mm ...Method) []Method {
 	sort.Slice(mm, func(i, j int) bool {
 		return mm[i].Name < mm[j].Name
