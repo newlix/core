@@ -1,7 +1,6 @@
 package swift
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -71,12 +70,9 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method, ts []core.Type) {
 
 // writeFields to writer.
 func writeFields(w io.Writer, fields []core.Field) {
-	for i, f := range fields {
+	for _, f := range fields {
 		out(w, "    // %s", f.Description)
 		out(w, "    var %s: %s = %s\n", f.LowerCamelName, swiftType(f), swiftDefault(f))
-		if i < len(fields)-1 {
-			fmt.Fprintf(w, "")
-		}
 	}
 }
 
@@ -92,7 +88,7 @@ func writeCodingKeys(w io.Writer, fields []core.Field) {
 	out(w, "    }")
 }
 
-// writeCodingKeys to writer
+// writeDecoderInit to writer.
 func writeDecoderInit(w io.Writer, extensionName string, fields []core.Field) {
 	if len(fields) == 0 {
 		return
@@ -110,7 +106,7 @@ func writeDecoderInit(w io.Writer, extensionName string, fields []core.Field) {
 	out(w, "}")
 }
 
-// swiftType returns a Go equivalent type for field f.
+// swiftType returns a Swift equivalent type for field f.
 func swiftType(f core.Field) string {
 	t := f.Type.SwiftType
 	if t == "" {

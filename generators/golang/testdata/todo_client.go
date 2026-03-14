@@ -25,7 +25,7 @@ func (e Error) Error() string {
 }
 
 // call implementation.
-func call(client *http.Client, authToken, endpoint, method string, in, out interface{}) error {
+func call(client *http.Client, authToken, endpoint, method string, in, out any) error {
 	var body io.Reader
 
 	// default client
