@@ -28,12 +28,11 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 
 	common.GenerateWarning(w)
 
-	out(w, "package %s\n\n", c.Package)
-
-	out(w, `
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-`)
+	out(w, "package %s", c.Package)
+	out(w, "")
+	out(w, "import kotlinx.serialization.SerialName")
+	out(w, "import kotlinx.serialization.Serializable")
+	out(w, "")
 	GenerateTypes(w, c.Types)
 }
 

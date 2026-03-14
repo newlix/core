@@ -47,7 +47,7 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 }
 
 func GenerateClient(w io.Writer, mm []core.Method) {
-	w.Write([]byte(`// Client is the API client.
+	io.WriteString(w, `// Client is the API client.
 type Client struct {
 	// URL is the required API endpoint address.
 	URL string
@@ -135,7 +135,7 @@ func call(client *http.Client, authToken, endpoint, method string, in, out any) 
 	return nil
 }
 
-`))
+`)
 
 	for i, m := range mm {
 		name := GoName(m.CamelName)
