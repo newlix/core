@@ -144,6 +144,11 @@ func TestInitTypes(t *testing.T) {
 		assert.False(t, person.Fields[0].Type.IsBuiltin())
 	})
 
+	t.Run("returns error on empty name", func(t *testing.T) {
+		_, err := core.InitTypes(core.Type{Name: ""})
+		assert.EqualError(t, err, "type name must not be empty")
+	})
+
 	t.Run("returns error on duplicate names", func(t *testing.T) {
 		_, err := core.InitTypes(
 			core.Type{Name: "item"},

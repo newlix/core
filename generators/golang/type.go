@@ -147,7 +147,7 @@ func writeFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
 		out(w, "	// %s", f.Description)
 		out(w, "	%s %s %s", GoName(f.CamelName), FieldGoType(pkg, f), goTags(f.Name, tags))
 		if i < len(ff)-1 {
-			fmt.Fprintf(w, "\n")
+			out(w, "")
 		}
 	}
 }

@@ -50,7 +50,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 	GenerateMethodTypes(w, c.Methods)
 }
 
-var start = `data class CoreError(
+const start = `data class CoreError(
     val status: Int,
     val msg: String
 ) : Exception()

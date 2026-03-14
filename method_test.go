@@ -102,6 +102,11 @@ func TestInitMethods(t *testing.T) {
 		assert.True(t, mm[0].Outputs[0].IsArray)
 	})
 
+	t.Run("returns error on empty name", func(t *testing.T) {
+		_, err := core.InitMethods(core.Method{Name: ""})
+		assert.EqualError(t, err, "method name must not be empty")
+	})
+
 	t.Run("returns error on duplicate names", func(t *testing.T) {
 		_, err := core.InitMethods(
 			core.Method{Name: "add_item"},

@@ -35,7 +35,7 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 
 }
 
-var start = `struct CoreError: LocalizedError {
+const start = `struct CoreError: LocalizedError {
     let status: Int
     let message: String
 
