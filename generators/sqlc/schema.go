@@ -16,7 +16,9 @@ type GenerateSchemaFileConfig struct {
 }
 
 func GenerateSchemaFile(c GenerateSchemaFileConfig) {
-	os.MkdirAll(path.Dir(c.Output), 0o700)
+	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
+		log.Fatal(err)
+	}
 	w, err := os.Create(c.Output)
 	if err != nil {
 		log.Fatal(err)

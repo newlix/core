@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/newlix/core/examples/todo/spec"
 	"github.com/newlix/core/generators/swift"
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestGenerateClient(t *testing.T) {

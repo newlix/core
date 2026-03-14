@@ -19,7 +19,9 @@ type GenerateServerFileConfig struct {
 
 // generate implementation.
 func GenerateServerFile(c GenerateServerFileConfig) {
-	os.MkdirAll(path.Dir(c.Output), 0o700)
+	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
+		log.Fatal(err)
+	}
 	w, err := os.Create(c.Output)
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +49,7 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 	out(w, "func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {")
 	out(w, "	if r.Method != \"POST\" {")
 	out(w, "		w.Header().Add(\"Allow\", \"POST\") // RFC 9110.")
-	out(w, "		core.WriteError(w, core.BadRequest(\"only POST is allowed\"))")
+	out(w, "		core.WriteError(w, core.Error(http.StatusMethodNotAllowed, \"only POST is allowed\"))")
 	out(w, "		return")
 	out(w, "	}")
 	out(w, "	ctx := core.NewRequestContext(r.Context(), r)")
@@ -70,7 +72,7 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 		out(w, "		res = out")
 	}
 	out(w, "	default:")
-	out(w, "		err = core.BadRequest(\"Invalid method\")")
+	out(w, "		err = core.Error(http.StatusNotFound, \"method not found\")")
 	out(w, "	}")
 	out(w, "")
 	out(w, "	if err != nil {")

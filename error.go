@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -34,7 +35,8 @@ func BadRequest(message string) error {
 // implementation.
 func WriteError(w http.ResponseWriter, err error) {
 	c := 500
-	if e, ok := err.(ServerError); ok {
+	var e ServerError
+	if errors.As(err, &e) {
 		c = e.Status
 	}
 	http.Error(w, err.Error(), c)

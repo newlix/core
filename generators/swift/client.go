@@ -18,7 +18,9 @@ type GenerateClientFileConfig struct {
 }
 
 func GenerateClientFile(c GenerateClientFileConfig) {
-	os.MkdirAll(path.Dir(c.Output), 0o700)
+	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
+		log.Fatal(err)
+	}
 	w, err := os.Create(c.Output)
 	if err != nil {
 		log.Fatal(err)
@@ -91,7 +93,7 @@ struct %s {
 
 `
 
-// Generate writes the Go client implementations to w.
+// GenerateClient writes the Swift client implementation to w.
 func GenerateClient(w io.Writer, ms []core.Method, client string) {
 	out(w, start, client, client)
 	for _, m := range ms {

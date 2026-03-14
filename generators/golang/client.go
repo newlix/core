@@ -19,7 +19,9 @@ type GenerateClientFileConfig struct {
 
 // generate implementation.
 func GenerateClientFile(c GenerateClientFileConfig) {
-	os.MkdirAll(path.Dir(c.Output), 0o700)
+	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
+		log.Fatal(err)
+	}
 	w, err := os.Create(c.Output)
 	if err != nil {
 		log.Fatal(err)
@@ -33,6 +35,7 @@ func GenerateClientFile(c GenerateClientFileConfig) {
   "fmt"
   "io"
   "net/http"
+  "strings"
 )
 
 `)
@@ -111,7 +114,7 @@ func call(client *http.Client, authToken, endpoint, method string, in, out any) 
 	// error
 	if res.StatusCode >= 300 {
 		var e Error
-		if res.Header.Get("Content-Type") == "application/json" {
+		if strings.HasPrefix(res.Header.Get("Content-Type"), "application/json") {
 			if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 				return err
 			}

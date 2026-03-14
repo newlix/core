@@ -9,21 +9,21 @@ import (
 
 // Type model.
 type Type struct {
-	Name            string   `json:"name"` // based on filename
-	CamelName       string   `json:"camel_name"`
-	LowerCamelName  string   `json:"lower_camel_name"`
-	Description     string   `json:"description"`
-	Fields          []Field  `json:"fields"`
-	PrimaryKey      []string `json:"primary_key"`
-	GoPackage       string   `json:"go_import"`
-	GoType          string   `json:"go_type"`
-	SwiftType       string   `json:"swift_type"`
-	SwiftDefault    string   `json:"swift_default"`
-	KotlinType      string   `json:"kotlin_type"`
-	KotlinDefault   string   `json:"kotlin_default"`
-	SqlcType        string   `json:"sqlc_type"`
-	isInitialized   bool
-	isBuiltin       bool
+	Name           string   `json:"name"` // based on filename
+	CamelName      string   `json:"camel_name"`
+	LowerCamelName string   `json:"lower_camel_name"`
+	Description    string   `json:"description"`
+	Fields         []Field  `json:"fields"`
+	PrimaryKey     []string `json:"primary_key"`
+	GoPackage      string   `json:"go_import"`
+	GoType         string   `json:"go_type"`
+	SwiftType      string   `json:"swift_type"`
+	SwiftDefault   string   `json:"swift_default"`
+	KotlinType     string   `json:"kotlin_type"`
+	KotlinDefault  string   `json:"kotlin_default"`
+	SqlcType       string   `json:"sqlc_type"`
+	isInitialized  bool
+	isBuiltin      bool
 }
 
 func (t Type) IsInitialized() bool {

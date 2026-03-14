@@ -25,7 +25,7 @@ func (e Error) Error() string {
 }
 
 // call implementation.
-func call(client *http.Client, authToken, endpoint, method string, in, out interface{}) error {
+func call(client *http.Client, authToken, endpoint, method string, in, out any) error {
 	var body io.Reader
 
 	// default client
@@ -65,7 +65,7 @@ func call(client *http.Client, authToken, endpoint, method string, in, out inter
 	// error
 	if res.StatusCode >= 300 {
 		var e Error
-		if res.Header.Get("Content-Type") == "application/json" {
+		if strings.HasPrefix(res.Header.Get("Content-Type"), "application/json") {
 			if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 				return err
 			}

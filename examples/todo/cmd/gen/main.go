@@ -45,11 +45,9 @@ func main() {
 	})
 
 	kotlin.GenerateClientFile(kotlin.GenerateClientFileConfig{
-		Output:       "kotlin/client.gen.kt",
-		Package:      "com.example",
-		Methods:      spec.Methods,
-		TypesPackage: "",
-		Types:        spec.Types,
-		Client:       "TodoClient",
+		Output:  "kotlin/client.gen.kt",
+		Package: "com.example",
+		Methods: spec.Methods,
+		Client:  "TodoClient",
 	})
 }

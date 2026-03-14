@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/newlix/core"
@@ -58,7 +59,9 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 
 	CheckPackage(c.Package, c.Types)
 
-	os.MkdirAll(path.Dir(c.Output), 0o700)
+	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
+		log.Fatal(err)
+	}
 	w, err := os.Create(c.Output)
 	if err != nil {
 		log.Fatal(err)
@@ -117,7 +120,12 @@ func GenerateImports(w io.Writer, pkg string, tt []core.Type) {
 			}
 		}
 	}
+	imports := make([]string, 0, len(m))
 	for s := range m {
+		imports = append(imports, s)
+	}
+	sort.Strings(imports)
+	for _, s := range imports {
 		if strings.HasSuffix(s, `"`) {
 			out(w, "import %s", s)
 		} else {
@@ -139,6 +147,17 @@ func GenerateTypes(w io.Writer, pkg string, tt []core.Type, tags []string) {
 }
 
 func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []string) {
+	needsCustomJSON := false
+	for _, f := range t.Fields {
+		if f.Type.GoType == "*time.Time" {
+			needsCustomJSON = true
+			break
+		}
+	}
+	if !needsCustomJSON {
+		return
+	}
+
 	name := GoName(t.CamelName)
 	out(w, "")
 	out(w, "func (p %s) MarshalJSON() ([]byte, error) {", name)

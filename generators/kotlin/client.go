@@ -15,12 +15,13 @@ type GenerateClientFileConfig struct {
 	Package      string
 	Methods      []core.Method
 	TypesPackage string
-	Types        []core.Type
 	Client       string
 }
 
 func GenerateClientFile(c GenerateClientFileConfig) {
-	os.MkdirAll(path.Dir(c.Output), 0o700)
+	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
+		log.Fatal(err)
+	}
 	w, err := os.Create(c.Output)
 	if err != nil {
 		log.Fatal(err)

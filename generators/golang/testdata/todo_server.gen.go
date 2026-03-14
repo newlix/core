@@ -2,7 +2,7 @@
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.Header().Add("Allow", "POST") // RFC 9110.
-		core.WriteError(w, core.BadRequest("only POST is allowed"))
+		core.WriteError(w, core.Error(http.StatusMethodNotAllowed, "only POST is allowed"))
 		return
 	}
 	ctx := core.NewRequestContext(r.Context(), r)
@@ -37,7 +37,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		out, err = s.RemoveItem(ctx, in)
 		res = out
 	default:
-		err = core.BadRequest("Invalid method")
+		err = core.Error(http.StatusNotFound, "method not found")
 	}
 
 	if err != nil {
