@@ -19,3 +19,10 @@
   A. 建立獨立的 golden file（`todo_queries.sql` / `todo_schema.sql`），與 `.gen.sql` 分開
   B. 維持現狀 — sqlc 的 golden file 本身就是 generated，只要 CI 跑在 clean checkout 就不會有問題
 - **目前狀態**：未處理（跳過）
+
+## [generators/golang/type.go] `FieldGoType` 與 MarshalJSON 不支援 `[]time.Time`
+- **問題描述**：`FieldGoType` 在 `int64Time && GoType == "*time.Time"` 時直接回傳 `"int64"`，忽略 `IsArray`。若某個 field 是 `[]time.Time`，alias struct 會產生 `int64` 而非 `[]int64`，且 MarshalJSON/UnmarshalJSON 的逐欄位邏輯也不支援陣列。目前沒有 spec 使用此組合，但這是潛在的正確性問題。
+- **可能的做法**：
+  A. 在 `FieldGoType` 中加入 `IsArray` 判斷，並在 marshal/unmarshal 產生迴圈邏輯
+  B. 明確文件化不支援 `[]time.Time`，在 `GenerateJSONMarshalerIfNeeded` 加入 guard/panic
+- **目前狀態**：未處理（跳過）
