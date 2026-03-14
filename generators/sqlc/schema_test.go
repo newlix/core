@@ -12,7 +12,7 @@ import (
 )
 
 func TestGenerateSchema(t *testing.T) {
-	b, err := os.ReadFile("testdata/todo_schema.gen.sql")
+	b, err := os.ReadFile("testdata/todo_schema.sql")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 func TestGenerateQueries(t *testing.T) {
-	b, err := os.ReadFile("testdata/todo_queries.gen.sql")
+	b, err := os.ReadFile("testdata/todo_queries.sql")
 	if err != nil {
 		t.Fatal(err)
 	}
