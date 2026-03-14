@@ -7,7 +7,7 @@ import (
 
 // WriteResponse writes a JSON response, or 204 if the value is nil
 // to indicate there is no content.
-func WriteResponse(w http.ResponseWriter, value interface{}) {
+func WriteResponse(w http.ResponseWriter, value any) {
 	if value == nil {
 		w.WriteHeader(http.StatusNoContent)
 		return

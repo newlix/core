@@ -60,17 +60,7 @@ func InitTypes(tt ...Type) []Type {
 			t.PrimaryKey = []string{"id"}
 		}
 
-		for j, f := range t.Fields {
-
-			if f.LowerCamelName == "" {
-				f.LowerCamelName = strcase.ToLowerCamel(f.Name)
-			}
-			if f.CamelName == "" {
-				f.CamelName = strcase.ToCamel(f.Name)
-			}
-			f.Type = InitTypes(f.Type)[0]
-			t.Fields[j] = f
-		}
+		t.Fields = initFields(t.Fields)
 		t.isInitialized = true
 		tt[i] = t
 	}

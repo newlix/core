@@ -63,9 +63,9 @@ func writeInsert(w io.Writer, m core.Method, tt []core.Type) {
 	table := findTableForInputs(m.Inputs, tt)
 	var cols []string
 	var params []string
-	for i, f := range inputs {
+	for _, f := range inputs {
 		cols = append(cols, f.Name)
-		params = append(params, sqlcParam(f.Name, i+1))
+		params = append(params, sqlcParam(f.Name))
 	}
 	out(w, "INSERT INTO %s (%s) VALUES (%s);", table, strings.Join(cols, ", "), strings.Join(params, ", "))
 }
@@ -178,6 +178,6 @@ func columnNames(ff []core.Field) []string {
 	return out
 }
 
-func sqlcParam(name string, index int) string {
+func sqlcParam(name string) string {
 	return "@" + name
 }

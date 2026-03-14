@@ -1,5 +1,7 @@
 package core
 
+import "github.com/iancoleman/strcase"
+
 // Field model.
 type Field struct {
 	Name           string `json:"name"`
@@ -8,6 +10,20 @@ type Field struct {
 	Description    string `json:"description"`
 	Type           Type   `json:"type"`
 	IsArray        bool   `json:"is_array"`
+}
+
+func initFields(ff []Field) []Field {
+	for i, f := range ff {
+		if f.LowerCamelName == "" {
+			f.LowerCamelName = strcase.ToLowerCamel(f.Name)
+		}
+		if f.CamelName == "" {
+			f.CamelName = strcase.ToCamel(f.Name)
+		}
+		f.Type = InitTypes(f.Type)[0]
+		ff[i] = f
+	}
+	return ff
 }
 
 func BuiltinTypeFields(ff []Field) []Field {

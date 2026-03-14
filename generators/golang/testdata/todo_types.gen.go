@@ -3,7 +3,7 @@ type Item struct {
 	// ID is the unique id
 	ID int `json:"id" db:"id"`
 
-	// Tex is the content
+	// Text is the content
 	Text string `json:"text" db:"text"`
 
 	// CreatedAt is the timestamp which the item created at
@@ -19,7 +19,7 @@ func (p Item) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&Alias{
 		ID: p.ID,
 		Text: p.Text,
-		CreatedAt: p.CreatedAt.Unix(),
+		CreatedAt: func() int64 { if p.CreatedAt != nil { return p.CreatedAt.Unix() }; return 0 }(),
 	})
 }
 
@@ -35,6 +35,8 @@ func (p *Item) UnmarshalJSON(data []byte) error {
 	}
 	p.ID = tmp.ID
 	p.Text = tmp.Text
-	p.CreatedAt = ptr(time.Unix(tmp.CreatedAt, 0))
+	if tmp.CreatedAt != 0 {
+		p.CreatedAt = ptr(time.Unix(tmp.CreatedAt, 0))
+	}
 	return nil
 }

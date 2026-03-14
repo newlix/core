@@ -35,7 +35,7 @@ func TestWriteResponse(t *testing.T) {
 		assert.Equal(t, ``, strings.TrimSpace(w.Body.String()))
 	})
 
-	t.Run("with no content", func(t *testing.T) {
+	t.Run("with JSON content", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		core.WriteResponse(w, struct {
 			Name string `json:"name"`

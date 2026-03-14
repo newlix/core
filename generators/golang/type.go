@@ -147,7 +147,7 @@ func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []
 	for _, f := range t.Fields {
 		fn := GoName(f.CamelName)
 		if f.Type.GoType == "*time.Time" {
-			out(w, "		%s: p.%s.Unix(),", fn, fn)
+			out(w, "		%s: func() int64 { if p.%s != nil { return p.%s.Unix() }; return 0 }(),", fn, fn, fn)
 		} else {
 			out(w, "		%s: p.%s,", fn, fn)
 		}
@@ -165,7 +165,9 @@ func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []
 	for _, f := range t.Fields {
 		fn := GoName(f.CamelName)
 		if f.Type.GoType == "*time.Time" {
-			out(w, "	p.%s = ptr(time.Unix(tmp.%s, 0))", fn, fn)
+			out(w, "	if tmp.%s != 0 {", fn)
+			out(w, "		p.%s = ptr(time.Unix(tmp.%s, 0))", fn, fn)
+			out(w, "	}")
 		} else {
 			out(w, "	p.%s = tmp.%s", fn, fn)
 		}

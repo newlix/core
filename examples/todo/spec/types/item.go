@@ -14,7 +14,7 @@ var Item = core.Type{
 		},
 		{
 			Name:        "text",
-			Description: "Tex is the content",
+			Description: "Text is the content",
 			Type:        core.String,
 		},
 		{

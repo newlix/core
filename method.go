@@ -38,27 +38,8 @@ func InitMethods(mm ...Method) []Method {
 			m.CamelName = strcase.ToCamel(m.Name)
 		}
 
-		for j, f := range m.Inputs {
-			if f.LowerCamelName == "" {
-				f.LowerCamelName = strcase.ToLowerCamel(f.Name)
-			}
-			if f.CamelName == "" {
-				f.CamelName = strcase.ToCamel(f.Name)
-			}
-			f.Type = InitTypes(f.Type)[0]
-			m.Inputs[j] = f
-		}
-
-		for j, f := range m.Outputs {
-			if f.LowerCamelName == "" {
-				f.LowerCamelName = strcase.ToLowerCamel(f.Name)
-			}
-			if f.CamelName == "" {
-				f.CamelName = strcase.ToCamel(f.Name)
-			}
-			f.Type = InitTypes(f.Type)[0]
-			m.Outputs[j] = f
-		}
+		m.Inputs = initFields(m.Inputs)
+		m.Outputs = initFields(m.Outputs)
 		mm[i] = m
 	}
 

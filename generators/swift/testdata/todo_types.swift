@@ -3,7 +3,7 @@ struct Item: Codable {
     // ID is the unique id
     var id: Int = 0
 
-    // Tex is the content
+    // Text is the content
     var text: String = ""
 
     // CreatedAt is the timestamp which the item created at
