@@ -92,7 +92,7 @@ func TestGenerateTypes_EmptyFields(t *testing.T) {
 	var buf bytes.Buffer
 	swift.GenerateTypes(&buf, types)
 	got := buf.String()
-	want := "// Empty has no fields.\nstruct Empty: Codable {\n}\n\n"
+	want := "// Empty has no fields.\nstruct Empty: Codable {\n}\n"
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}

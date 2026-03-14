@@ -2,82 +2,80 @@
 import Foundation
 
 struct CoreError: LocalizedError {
-	let status: Int
-	let message: String
-	
-	var errorDescription: String? {
-		message
-	}
+    let status: Int
+    let message: String
+
+    var errorDescription: String? {
+        message
+    }
 }
 
 // TodoClient is the API client.
 struct TodoClient {
-	// encoder is the conventional json encoder
-	private let encoder = JSONEncoder()
-	
-	// decoder is the conventional json decoder
-	private let decoder = JSONDecoder()
-	
-	// endpoint is the required API endpoint address.
-	let endpoint: String
+    // encoder is the conventional json encoder
+    private let encoder = JSONEncoder()
 
-	// AuthToken is an optional authentication token.
-	var authToken: String?
+    // decoder is the conventional json decoder
+    private let decoder = JSONDecoder()
 
-	// session is the client used for making requests, defaulting to URLSession.shared.
-	let session: URLSession = URLSession.shared
+    // endpoint is the required API endpoint address.
+    let endpoint: String
 
-	private func call<Input, Output>(method: String, input: Input) async throws -> Output where Input: Codable, Output: Codable {
-		guard let url = URL(string: endpoint + "/" + method) else {
-			throw CoreError(status: 0, message: "Invalid URL: \(endpoint)/\(method)")
-		}
+    // AuthToken is an optional authentication token.
+    var authToken: String?
 
-		let body = try self.encoder.encode(input)
+    // session is the client used for making requests, defaulting to URLSession.shared.
+    let session: URLSession = URLSession.shared
 
-		var req = URLRequest(url: url)
-		req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-		if let tok = self.authToken {
-			req.setValue("Bearer " + tok, forHTTPHeaderField: "Authorization")
-		}
-		req.httpMethod = "POST"
-		req.httpBody = body
+    private func call<Input, Output>(method: String, input: Input) async throws -> Output where Input: Codable, Output: Codable {
+        guard let url = URL(string: endpoint + "/" + method) else {
+            throw CoreError(status: 0, message: "Invalid URL: \(endpoint)/\(method)")
+        }
 
-		let (data, res) = try await self.session.data(for: req)
+        let body = try self.encoder.encode(input)
 
-		guard let r = res as? HTTPURLResponse else {
-			throw CoreError(status: 0, message: "Unexpected response type")
-		}
-		
-		if r.statusCode >= 300 {
-			let body = String(decoding: data, as: UTF8.self)
-			let err = CoreError(status: r.statusCode, message: body)
-			throw err
-		}
-		return try self.decoder.decode(Output.self, from: data)
-	}
+        var req = URLRequest(url: url)
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let tok = self.authToken {
+            req.setValue("Bearer " + tok, forHTTPHeaderField: "Authorization")
+        }
+        req.httpMethod = "POST"
+        req.httpBody = body
 
+        let (data, res) = try await self.session.data(for: req)
 
-	// AddItem adds an item to the list.
-	func addItem(input: AddItemInput) async throws -> AddItemOutput {
-		return try await call(method: "add_item", input: input)
-	}
+        guard let r = res as? HTTPURLResponse else {
+            throw CoreError(status: 0, message: "Unexpected response type")
+        }
 
-	// GetItems returns all items in the list.
-	func getItems(input: GetItemsInput) async throws -> GetItemsOutput {
-		return try await call(method: "get_items", input: input)
-	}
+        if r.statusCode >= 300 {
+            let body = String(decoding: data, as: UTF8.self)
+            let err = CoreError(status: r.statusCode, message: body)
+            throw err
+        }
+        return try self.decoder.decode(Output.self, from: data)
+    }
 
-	// RemoveItem removes an item from the to-do list.
-	func removeItem(input: RemoveItemInput) async throws -> RemoveItemOutput {
-		return try await call(method: "remove_item", input: input)
-	}
+    // AddItem adds an item to the list.
+    func addItem(input: AddItemInput) async throws -> AddItemOutput {
+        return try await call(method: "add_item", input: input)
+    }
+
+    // GetItems returns all items in the list.
+    func getItems(input: GetItemsInput) async throws -> GetItemsOutput {
+        return try await call(method: "get_items", input: input)
+    }
+
+    // RemoveItem removes an item from the to-do list.
+    func removeItem(input: RemoveItemInput) async throws -> RemoveItemOutput {
+        return try await call(method: "remove_item", input: input)
+    }
 
 }
 
 struct AddItemInput: Codable {
     // the item to add.
     var item: Item = Item()
-
 
     enum CodingKeys: String, CodingKey {
         case item = "item"
@@ -90,7 +88,6 @@ extension AddItemInput {
         if let item = try container.decodeIfPresent(Item.self, forKey: .item) {
             self.item = item
         }
-
     }
 }
 
@@ -98,9 +95,7 @@ struct AddItemOutput: Codable {
 }
 
 struct GetItemsInput: Codable {
-
 }
-
 
 struct GetItemsOutput: Codable {
     // Items is the list of to-do items.
@@ -117,13 +112,12 @@ extension GetItemsOutput {
         if let items = try container.decodeIfPresent([Item].self, forKey: .items) {
             self.items = items
         }
-
     }
 }
+
 struct RemoveItemInput: Codable {
     // the id of the item to remove.
     var id: Int = 0
-
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -136,7 +130,6 @@ extension RemoveItemInput {
         if let id = try container.decodeIfPresent(Int.self, forKey: .id) {
             self.id = id
         }
-
     }
 }
 
@@ -155,6 +148,5 @@ extension RemoveItemOutput {
         if let item = try container.decodeIfPresent(Item.self, forKey: .item) {
             self.item = item
         }
-
     }
 }

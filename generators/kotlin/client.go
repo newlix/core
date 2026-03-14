@@ -81,7 +81,7 @@ class %s(val endpoint: String) {
             }
 
             return@withContext client.newCall(request.build()).execute().use { response ->
-                val body: String = response.body!!.string()
+                val body: String = response.body?.string() ?: ""
                 if (!response.isSuccessful) {
                     throw CoreError(
                         status = response.code,

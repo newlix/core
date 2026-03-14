@@ -33,28 +33,25 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 }
 
 func GenerateTypes(w io.Writer, tt []core.Type) {
-	// types
-	for _, t := range tt {
+	for i, t := range tt {
 		out(w, "// %s", t.Description)
 		out(w, "struct %s: Codable {", t.CamelName)
 		writeFields(w, t.Fields)
 		writeCodingKeys(w, t.Fields)
 		out(w, "}")
-		out(w, "")
 		writeDecoderInit(w, t.CamelName, t.Fields)
+		if i < len(tt)-1 {
+			out(w, "")
+		}
 	}
-
 }
 
 func GenerateMethodTypes(w io.Writer, ms []core.Method) {
-	// methods
-	for _, m := range ms {
+	for i, m := range ms {
 		out(w, "struct %sInput: Codable {", m.CamelName)
 		writeFields(w, m.Inputs)
-		out(w, "")
 		writeCodingKeys(w, m.Inputs)
 		out(w, "}")
-		out(w, "")
 		writeDecoderInit(w, m.CamelName+"Input", m.Inputs)
 
 		out(w, "")
@@ -63,26 +60,31 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 		writeFields(w, m.Outputs)
 		writeCodingKeys(w, m.Outputs)
 		out(w, "}")
-		out(w, "")
 		writeDecoderInit(w, m.CamelName+"Output", m.Outputs)
 
+		if i < len(ms)-1 {
+			out(w, "")
+		}
 	}
-
 }
 
 // writeFields to writer.
 func writeFields(w io.Writer, fields []core.Field) {
-	for _, f := range fields {
+	for i, f := range fields {
 		out(w, "    // %s", f.Description)
-		out(w, "    var %s: %s = %s\n", f.LowerCamelName, swiftType(f), swiftDefault(f))
+		out(w, "    var %s: %s = %s", f.LowerCamelName, swiftType(f), swiftDefault(f))
+		if i < len(fields)-1 {
+			out(w, "")
+		}
 	}
 }
 
-// writeCodingKeys to writer
+// writeCodingKeys to writer.
 func writeCodingKeys(w io.Writer, fields []core.Field) {
 	if len(fields) == 0 {
 		return
 	}
+	out(w, "")
 	out(w, "    enum CodingKeys: String, CodingKey {")
 	for _, f := range fields {
 		out(w, "        case %s = \"%s\"", f.LowerCamelName, f.Name)
@@ -95,14 +97,17 @@ func writeDecoderInit(w io.Writer, extensionName string, fields []core.Field) {
 	if len(fields) == 0 {
 		return
 	}
+	out(w, "")
 	out(w, "extension %s {", extensionName)
 	out(w, "    init(from decoder: Decoder) throws {")
 	out(w, "        let container = try decoder.container(keyedBy: CodingKeys.self)")
-	for _, f := range fields {
+	for i, f := range fields {
 		out(w, "        if let %s = try container.decodeIfPresent(%s.self, forKey: .%s) {", f.LowerCamelName, swiftType(f), f.LowerCamelName)
 		out(w, "            self.%s = %s", f.LowerCamelName, f.LowerCamelName)
 		out(w, "        }")
-		out(w, "")
+		if i < len(fields)-1 {
+			out(w, "")
+		}
 	}
 	out(w, "    }")
 	out(w, "}")

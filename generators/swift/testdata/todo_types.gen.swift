@@ -22,6 +22,5 @@ extension Item {
         if let text = try container.decodeIfPresent(String.self, forKey: .text) {
             self.text = text
         }
-
     }
 }
