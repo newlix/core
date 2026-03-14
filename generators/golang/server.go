@@ -17,7 +17,7 @@ type GenerateServerFileConfig struct {
 	Types   []core.Type
 }
 
-// generate implementation.
+// GenerateServerFile writes the Go server file to the configured output path.
 func GenerateServerFile(c GenerateServerFileConfig) {
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
 		log.Fatal(err)
@@ -68,7 +68,7 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 		out(w, "		if err != nil {")
 		out(w, "			break")
 		out(w, "		}")
-		out(w, "		out, err = s.%s(ctx, in)", GoName(m.CamelName))
+		out(w, "		out, err = s.%s(ctx, in)", name)
 		out(w, "		res = out")
 	}
 	out(w, "	default:")

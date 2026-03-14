@@ -34,7 +34,6 @@ func main() {
 	swift.GenerateClientFile(swift.GenerateClientFileConfig{
 		Output:  "swift/client.gen.swift",
 		Methods: spec.Methods,
-		Types:   spec.Types,
 		Client:  "TodoClient",
 	})
 

@@ -22,12 +22,12 @@ func InitMethods(mm ...Method) []Method {
 	sort.Slice(mm, func(i, j int) bool {
 		return mm[i].Name < mm[j].Name
 	})
-	names := map[string]any{}
+	names := map[string]struct{}{}
 	for _, m := range mm {
 		if _, ok := names[m.Name]; ok {
 			log.Fatalf("duplicate method name = %q", m.Name)
 		}
-		names[m.Name] = nil
+		names[m.Name] = struct{}{}
 	}
 
 	for i, m := range mm {

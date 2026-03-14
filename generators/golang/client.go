@@ -17,7 +17,7 @@ type GenerateClientFileConfig struct {
 	Types   []core.Type
 }
 
-// generate implementation.
+// GenerateClientFile writes the Go client file to the configured output path.
 func GenerateClientFile(c GenerateClientFileConfig) {
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
 		log.Fatal(err)

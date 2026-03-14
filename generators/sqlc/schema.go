@@ -35,11 +35,16 @@ func generateWarning(w io.Writer) {
 
 func GenerateSchema(w io.Writer, tt []core.Type) {
 	generateWarning(w)
-	for i, t := range tt {
+	first := true
+	for _, t := range tt {
 		ff := core.BuiltinTypeFields(t.Fields)
 		if len(ff) == 0 {
 			continue
 		}
+		if !first {
+			out(w, "")
+		}
+		first = false
 		out(w, "CREATE TABLE %s (", t.Name)
 		for j, f := range ff {
 			col := "    " + f.Name + " " + sqlcType(f)
@@ -55,9 +60,6 @@ func GenerateSchema(w io.Writer, tt []core.Type) {
 			out(w, "%s", col)
 		}
 		out(w, ");")
-		if i < len(tt)-1 {
-			out(w, "")
-		}
 	}
 }
 

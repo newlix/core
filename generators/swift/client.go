@@ -13,7 +13,6 @@ import (
 type GenerateClientFileConfig struct {
 	Output  string
 	Methods []core.Method
-	Types   []core.Type
 	Client  string
 }
 

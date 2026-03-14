@@ -71,7 +71,6 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 	common.GenerateWarning(w)
 
 	out(w, "package %s", PackageName(c.Package))
-	out(w, `import "encoding/json"`)
 	needsTime := false
 	for _, t := range c.Types {
 		for _, f := range t.Fields {
@@ -85,13 +84,14 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 		}
 	}
 	if needsTime {
+		out(w, `import "encoding/json"`)
 		out(w, `import "time"`)
-	}
-	out(w, `
+		out(w, `
 func ptr[T any](x T) *T {
     return &x
 }
 `)
+	}
 	GenerateImports(w, c.Package, c.Types)
 
 	GenerateTypes(w, c.Package, c.Types, c.Tags)

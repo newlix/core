@@ -38,12 +38,12 @@ func InitTypes(tt ...Type) []Type {
 	sort.Slice(tt, func(i, j int) bool {
 		return tt[i].Name < tt[j].Name
 	})
-	names := map[string]any{}
+	names := map[string]struct{}{}
 	for _, t := range tt {
 		if _, ok := names[t.Name]; ok {
 			log.Fatalf("duplicate type name = %q", t.Name)
 		}
-		names[t.Name] = nil
+		names[t.Name] = struct{}{}
 	}
 
 	for i, t := range tt {
