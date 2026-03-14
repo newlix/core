@@ -21,6 +21,7 @@ type Type struct {
 	SwiftDefault    string   `json:"swift_default"`
 	KotlinType      string   `json:"kotlin_type"`
 	KotlinDefault string `json:"kotlin_default"`
+	SqlcType      string `json:"sqlc_type"`
 	isInitialized bool
 	isBuiltin       bool
 }
@@ -86,6 +87,7 @@ var String = Type{
 	SwiftDefault:  `""`,
 	KotlinType:    "String",
 	KotlinDefault: `""`,
+	SqlcType:      "TEXT",
 	isBuiltin:     true,
 }
 
@@ -99,6 +101,7 @@ var Int = Type{
 	SwiftDefault:    "0",
 	KotlinType:      "Long",
 	KotlinDefault: "0",
+	SqlcType:      "BIGINT",
 	isBuiltin:     true,
 }
 
@@ -112,6 +115,7 @@ var Bool = Type{
 	SwiftDefault:    "false",
 	KotlinType:      "Boolean",
 	KotlinDefault: "false",
+	SqlcType:      "BOOLEAN",
 	isBuiltin:     true,
 }
 
@@ -125,6 +129,7 @@ var Float = Type{
 	SwiftDefault:    "0.0",
 	KotlinType:      "Double",
 	KotlinDefault: "0.0",
+	SqlcType:      "DOUBLE PRECISION",
 	isBuiltin:     true,
 }
 
@@ -138,5 +143,6 @@ var Time = Type{
 	SwiftDefault:    "Date()",
 	KotlinType:      "Date",
 	KotlinDefault: "Date()",
+	SqlcType:      "TIMESTAMPTZ",
 	isBuiltin:     true,
 }
