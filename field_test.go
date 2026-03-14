@@ -9,7 +9,7 @@ import (
 
 func TestBuiltinTypeFields(t *testing.T) {
 	t.Run("filters to builtin types only", func(t *testing.T) {
-		custom := core.InitTypes(core.Type{Name: "address"})[0]
+		custom := mustInitTypes(t, core.Type{Name: "address"})[0]
 		fields := []core.Field{
 			{Name: "id", Type: core.Int},
 			{Name: "name", Type: core.String},
@@ -24,7 +24,7 @@ func TestBuiltinTypeFields(t *testing.T) {
 	})
 
 	t.Run("returns empty for no builtin fields", func(t *testing.T) {
-		custom := core.InitTypes(core.Type{Name: "tag"})[0]
+		custom := mustInitTypes(t, core.Type{Name: "tag"})[0]
 		fields := []core.Field{
 			{Name: "tag", Type: custom},
 		}

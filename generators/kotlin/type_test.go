@@ -53,10 +53,13 @@ func TestGenerateMethodTypes(t *testing.T) {
 }
 
 func TestGenerateTypes_EmptyFields(t *testing.T) {
-	types := core.InitTypes(core.Type{
+	types, err := core.InitTypes(core.Type{
 		Name:        "empty",
 		Description: "empty type",
 	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	var buf bytes.Buffer
 	kotlin.GenerateTypes(&buf, types)
 	got := buf.String()
@@ -67,10 +70,13 @@ func TestGenerateTypes_EmptyFields(t *testing.T) {
 }
 
 func TestGenerateMethodTypes_EmptyOutputs(t *testing.T) {
-	methods := core.InitMethods(core.Method{
+	methods, err := core.InitMethods(core.Method{
 		Name:        "ping",
 		Description: "health check",
 	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	var buf bytes.Buffer
 	kotlin.GenerateMethodTypes(&buf, methods)
 	got := buf.String()

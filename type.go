@@ -1,7 +1,7 @@
 package core
 
 import (
-	"log"
+	"fmt"
 	"sort"
 
 	"github.com/iancoleman/strcase"
@@ -34,14 +34,14 @@ func (t Type) IsBuiltin() bool {
 	return t.isBuiltin
 }
 
-func InitTypes(tt ...Type) []Type {
+func InitTypes(tt ...Type) ([]Type, error) {
 	sort.Slice(tt, func(i, j int) bool {
 		return tt[i].Name < tt[j].Name
 	})
 	names := map[string]struct{}{}
 	for _, t := range tt {
 		if _, ok := names[t.Name]; ok {
-			log.Fatalf("duplicate type name = %q", t.Name)
+			return nil, fmt.Errorf("duplicate type name = %q", t.Name)
 		}
 		names[t.Name] = struct{}{}
 	}
@@ -49,7 +49,7 @@ func InitTypes(tt ...Type) []Type {
 	for i, t := range tt {
 		tt[i] = initType(t)
 	}
-	return tt
+	return tt, nil
 }
 
 func initType(t Type) Type {

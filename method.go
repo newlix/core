@@ -1,7 +1,7 @@
 package core
 
 import (
-	"log"
+	"fmt"
 	"sort"
 
 	"github.com/iancoleman/strcase"
@@ -18,14 +18,14 @@ type Method struct {
 }
 
 // InitMethods initializes and validates methods.
-func InitMethods(mm ...Method) []Method {
+func InitMethods(mm ...Method) ([]Method, error) {
 	sort.Slice(mm, func(i, j int) bool {
 		return mm[i].Name < mm[j].Name
 	})
 	names := map[string]struct{}{}
 	for _, m := range mm {
 		if _, ok := names[m.Name]; ok {
-			log.Fatalf("duplicate method name = %q", m.Name)
+			return nil, fmt.Errorf("duplicate method name = %q", m.Name)
 		}
 		names[m.Name] = struct{}{}
 	}
@@ -43,5 +43,5 @@ func InitMethods(mm ...Method) []Method {
 		mm[i] = m
 	}
 
-	return mm
+	return mm, nil
 }

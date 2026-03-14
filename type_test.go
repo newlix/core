@@ -7,9 +7,16 @@ import (
 	"github.com/tj/assert"
 )
 
+func mustInitTypes(t *testing.T, tt ...core.Type) []core.Type {
+	t.Helper()
+	result, err := core.InitTypes(tt...)
+	assert.NoError(t, err)
+	return result
+}
+
 func TestInitTypes(t *testing.T) {
 	t.Run("sorts by name", func(t *testing.T) {
-		tt := core.InitTypes(
+		tt := mustInitTypes(t,
 			core.Type{Name: "zebra"},
 			core.Type{Name: "apple"},
 		)
@@ -18,13 +25,13 @@ func TestInitTypes(t *testing.T) {
 	})
 
 	t.Run("sets camel names", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{Name: "user_profile"})
+		tt := mustInitTypes(t, core.Type{Name: "user_profile"})
 		assert.Equal(t, "UserProfile", tt[0].CamelName)
 		assert.Equal(t, "userProfile", tt[0].LowerCamelName)
 	})
 
 	t.Run("preserves explicit camel names", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{
+		tt := mustInitTypes(t, core.Type{
 			Name:           "item",
 			CamelName:      "MyItem",
 			LowerCamelName: "myItem",
@@ -34,12 +41,12 @@ func TestInitTypes(t *testing.T) {
 	})
 
 	t.Run("defaults primary key to id", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{Name: "item"})
+		tt := mustInitTypes(t, core.Type{Name: "item"})
 		assert.Equal(t, []string{"id"}, tt[0].PrimaryKey)
 	})
 
 	t.Run("preserves explicit primary key", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{
+		tt := mustInitTypes(t, core.Type{
 			Name:       "item",
 			PrimaryKey: []string{"slug"},
 		})
@@ -47,12 +54,12 @@ func TestInitTypes(t *testing.T) {
 	})
 
 	t.Run("marks as initialized", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{Name: "item"})
+		tt := mustInitTypes(t, core.Type{Name: "item"})
 		assert.True(t, tt[0].IsInitialized())
 	})
 
 	t.Run("initializes field types recursively", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{
+		tt := mustInitTypes(t, core.Type{
 			Name: "order",
 			Fields: []core.Field{
 				{Name: "total", Type: core.Float},
@@ -62,7 +69,7 @@ func TestInitTypes(t *testing.T) {
 	})
 
 	t.Run("sets field camel names", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{
+		tt := mustInitTypes(t, core.Type{
 			Name: "item",
 			Fields: []core.Field{
 				{Name: "created_at", Type: core.Time},
@@ -81,7 +88,15 @@ func TestInitTypes(t *testing.T) {
 	})
 
 	t.Run("custom types are not builtin", func(t *testing.T) {
-		tt := core.InitTypes(core.Type{Name: "item"})
+		tt := mustInitTypes(t, core.Type{Name: "item"})
 		assert.Equal(t, false, tt[0].IsBuiltin())
+	})
+
+	t.Run("returns error on duplicate names", func(t *testing.T) {
+		_, err := core.InitTypes(
+			core.Type{Name: "item"},
+			core.Type{Name: "item"},
+		)
+		assert.Error(t, err)
 	})
 }

@@ -1,6 +1,8 @@
 package spec
 
 import (
+	"log"
+
 	"github.com/newlix/core"
 	"github.com/newlix/core/examples/todo/spec/methods"
 	"github.com/newlix/core/examples/todo/spec/types"
@@ -12,12 +14,19 @@ var (
 )
 
 func init() {
-	Types = core.InitTypes(
+	var err error
+	Types, err = core.InitTypes(
 		types.Item,
 	)
-	Methods = core.InitMethods(
+	if err != nil {
+		log.Fatal(err)
+	}
+	Methods, err = core.InitMethods(
 		methods.AddItem,
 		methods.GetItems,
 		methods.RemoveItem,
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
