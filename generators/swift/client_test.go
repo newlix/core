@@ -19,12 +19,6 @@ func TestGenerateClient(t *testing.T) {
 	var act bytes.Buffer
 	swift.GenerateClient(&act, spec.Methods, "TodoClient")
 	got := act.String()
-	w, err := os.Create("testdata/todo_client.gen.swift")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}

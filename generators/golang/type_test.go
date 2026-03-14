@@ -57,12 +57,6 @@ func TestGenerateTypes(t *testing.T) {
 	var act bytes.Buffer
 	golang.GenerateTypes(&act, "github.com/newlix/core/examples/todo", spec.Types, []string{"json", "db"})
 	got := act.String()
-	w, err := os.Create("testdata/todo_types.gen.go")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}
@@ -77,12 +71,6 @@ func TestGenerateMethodTypes(t *testing.T) {
 	var act bytes.Buffer
 	golang.GenerateMethodTypes(&act, "github.com/newlix/core/examples/todo/client", spec.Methods)
 	got := act.String()
-	w, err := os.Create("testdata/todo_method_types.gen.go")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}

@@ -21,12 +21,6 @@ func TestGenerateTypes(t *testing.T) {
 	var act bytes.Buffer
 	swift.GenerateTypes(&act, spec.Types)
 	got := act.String()
-	w, err := os.Create("testdata/todo_types.gen.swift")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}
@@ -41,12 +35,6 @@ func TestGenerateMethodTypes(t *testing.T) {
 	var act bytes.Buffer
 	swift.GenerateMethodTypes(&act, spec.Methods)
 	got := act.String()
-	w, err := os.Create("testdata/todo_method_types.gen.swift")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}

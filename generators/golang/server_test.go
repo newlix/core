@@ -21,12 +21,6 @@ func TestGenerateServer(t *testing.T) {
 	var act bytes.Buffer
 	golang.GenerateServer(&act, spec.Methods)
 	got := act.String()
-	w, err := os.Create("testdata/todo_server.gen.go")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}

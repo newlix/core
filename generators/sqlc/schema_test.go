@@ -20,12 +20,6 @@ func TestGenerateSchema(t *testing.T) {
 	var buf bytes.Buffer
 	sqlc.GenerateSchema(&buf, spec.Types)
 	got := buf.String()
-	w, err := os.Create("testdata/todo_schema.gen.sql")
-	if err != nil {
-		t.Fatal(err)
-	}
-	w.WriteString(got)
-	w.Close()
 	if got != want {
 		t.Error(cmp.Diff(got, want))
 	}
