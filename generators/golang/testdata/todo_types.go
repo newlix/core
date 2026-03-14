@@ -5,38 +5,4 @@ type Item struct {
 
 	// Text is the content
 	Text string `json:"text" db:"text"`
-
-	// CreatedAt is the timestamp which the item created at
-	CreatedAt *time.Time `json:"created_at" db:"created_at"`
-}
-
-func (p Item) MarshalJSON() ([]byte, error) {
-	type Alias struct {
-		ID int `json:"id" db:"id"`
-		Text string `json:"text" db:"text"`
-		CreatedAt int64 `json:"created_at" db:"created_at"`
-	}
-	return json.Marshal(&Alias{
-		ID: p.ID,
-		Text: p.Text,
-		CreatedAt: func() int64 { if p.CreatedAt != nil { return p.CreatedAt.Unix() }; return 0 }(),
-	})
-}
-
-func (p *Item) UnmarshalJSON(data []byte) error {
-	type Alias struct {
-		ID int `json:"id" db:"id"`
-		Text string `json:"text" db:"text"`
-		CreatedAt int64 `json:"created_at" db:"created_at"`
-	}
-	var tmp Alias
-	if err := json.Unmarshal(data, &tmp); err != nil {
-		return err
-	}
-	p.ID = tmp.ID
-	p.Text = tmp.Text
-	if tmp.CreatedAt != 0 {
-		p.CreatedAt = ptr(time.Unix(tmp.CreatedAt, 0))
-	}
-	return nil
 }

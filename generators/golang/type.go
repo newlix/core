@@ -71,27 +71,6 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 	common.GenerateWarning(w)
 
 	out(w, "package %s", PackageName(c.Package))
-	needsTime := false
-	for _, t := range c.Types {
-		for _, f := range t.Fields {
-			if f.Type.Name == core.Time.Name {
-				needsTime = true
-				break
-			}
-		}
-		if needsTime {
-			break
-		}
-	}
-	if needsTime {
-		out(w, `import "encoding/json"`)
-		out(w, `import "time"`)
-		out(w, `
-func ptr[T any](x T) *T {
-    return &x
-}
-`)
-	}
 	GenerateImports(w, c.Package, c.Types)
 
 	GenerateTypes(w, c.Package, c.Types, c.Tags)
@@ -140,62 +119,9 @@ func GenerateTypes(w io.Writer, pkg string, tt []core.Type, tags []string) {
 		out(w, "type %s struct {", GoName(t.CamelName))
 		writeFields(w, pkg, t.Fields, tags)
 		out(w, "}")
-
-		GenerateJSONMarshalerIfNeeded(w, t, pkg, tags)
-
 	}
 }
 
-func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []string) {
-	needsCustomJSON := false
-	for _, f := range t.Fields {
-		if f.Type.GoType == "*time.Time" {
-			if f.IsArray {
-				log.Fatalf("type %s field %s: []time.Time is not supported in JSON marshal codegen", t.Name, f.Name)
-			}
-			needsCustomJSON = true
-		}
-	}
-	if !needsCustomJSON {
-		return
-	}
-
-	name := GoName(t.CamelName)
-	out(w, "")
-	out(w, "func (p %s) MarshalJSON() ([]byte, error) {", name)
-	writeAliasType(w, pkg, t, tags)
-	out(w, "	return json.Marshal(&Alias{")
-	for _, f := range t.Fields {
-		fn := GoName(f.CamelName)
-		if f.Type.GoType == "*time.Time" {
-			out(w, "		%s: func() int64 { if p.%s != nil { return p.%s.Unix() }; return 0 }(),", fn, fn, fn)
-		} else {
-			out(w, "		%s: p.%s,", fn, fn)
-		}
-	}
-	out(w, "	})")
-	out(w, "}")
-	out(w, "")
-
-	out(w, "func (p *%s) UnmarshalJSON(data []byte) error {", name)
-	writeAliasType(w, pkg, t, tags)
-	out(w, "	var tmp Alias")
-	out(w, "	if err := json.Unmarshal(data, &tmp); err != nil {")
-	out(w, "		return err")
-	out(w, "	}")
-	for _, f := range t.Fields {
-		fn := GoName(f.CamelName)
-		if f.Type.GoType == "*time.Time" {
-			out(w, "	if tmp.%s != 0 {", fn)
-			out(w, "		p.%s = ptr(time.Unix(tmp.%s, 0))", fn, fn)
-			out(w, "	}")
-		} else {
-			out(w, "	p.%s = tmp.%s", fn, fn)
-		}
-	}
-	out(w, "	return nil")
-	out(w, "}")
-}
 func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method) {
 	tags := []string{"json"}
 
@@ -215,26 +141,14 @@ func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method) {
 	}
 }
 
-func writeAliasType(w io.Writer, pkg string, t core.Type, tags []string) {
-	out(w, "	type Alias struct {")
-	writeAliasFields(w, pkg, t.Fields, tags)
-	out(w, "	}")
-}
-
 // writeFields to writer
 func writeFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
 	for i, f := range ff {
 		out(w, "	// %s", f.Description)
-		out(w, "	%s %s %s", GoName(f.CamelName), FieldGoType(pkg, f, false), goTags(f.Name, tags))
+		out(w, "	%s %s %s", GoName(f.CamelName), FieldGoType(pkg, f), goTags(f.Name, tags))
 		if i < len(ff)-1 {
 			fmt.Fprintf(w, "\n")
 		}
-	}
-}
-
-func writeAliasFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
-	for _, f := range ff {
-		out(w, "		%s %s %s", GoName(f.CamelName), FieldGoType(pkg, f, true), goTags(f.Name, tags))
 	}
 }
 
@@ -245,13 +159,7 @@ func PackageName(pkg string) string {
 	return path.Base(pkg)
 }
 
-func FieldGoType(pkg string, f core.Field, int64Time bool) string {
-	if int64Time && f.Type.GoType == "*time.Time" {
-		if f.IsArray {
-			log.Fatalf("field %s: []time.Time is not supported in JSON marshal codegen", f.Name)
-		}
-		return "int64"
-	}
+func FieldGoType(pkg string, f core.Field) string {
 	if f.IsArray {
 		return "[]" + TypeGoType(pkg, f.Type)
 	}

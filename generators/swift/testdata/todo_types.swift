@@ -6,13 +6,9 @@ struct Item: Codable {
     // Text is the content
     var text: String = ""
 
-    // CreatedAt is the timestamp which the item created at
-    var createdAt: Date = Date()
-
     enum CodingKeys: String, CodingKey {
         case id = "id"
         case text = "text"
-        case createdAt = "created_at"
     }
 }
 
@@ -25,10 +21,6 @@ extension Item {
 
         if let text = try container.decodeIfPresent(String.self, forKey: .text) {
             self.text = text
-        }
-
-        if let createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) {
-            self.createdAt = createdAt
         }
 
     }

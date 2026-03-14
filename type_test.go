@@ -72,7 +72,7 @@ func TestInitTypes(t *testing.T) {
 		tt := mustInitTypes(t, core.Type{
 			Name: "item",
 			Fields: []core.Field{
-				{Name: "created_at", Type: core.Time},
+				{Name: "created_at", Type: core.String},
 			},
 		})
 		assert.Equal(t, "CreatedAt", tt[0].Fields[0].CamelName)
@@ -84,7 +84,6 @@ func TestInitTypes(t *testing.T) {
 		assert.True(t, core.Int.IsBuiltin())
 		assert.True(t, core.Bool.IsBuiltin())
 		assert.True(t, core.Float.IsBuiltin())
-		assert.True(t, core.Time.IsBuiltin())
 	})
 
 	t.Run("custom types are not builtin", func(t *testing.T) {

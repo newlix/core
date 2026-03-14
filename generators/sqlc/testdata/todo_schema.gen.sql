@@ -2,6 +2,5 @@
 
 CREATE TABLE item (
     id BIGINT PRIMARY KEY NOT NULL,
-    text TEXT NOT NULL,
-    created_at TIMESTAMPTZ
+    text TEXT NOT NULL
 );

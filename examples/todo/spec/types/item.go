@@ -17,11 +17,6 @@ var Item = core.Type{
 			Description: "Text is the content",
 			Type:        core.String,
 		},
-		{
-			Name:        "created_at",
-			Description: "CreatedAt is the timestamp which the item created at",
-			Type:        core.Time,
-		},
 	},
 	GoPackage: "github.com/newlix/core/examples/todo",
 }

@@ -115,14 +115,3 @@ var Float = Type{
 	isBuiltin:     true,
 }
 
-var Time = Type{
-	Name:          "time",
-	Description:   "built-in time",
-	GoType:        "*time.Time",
-	SwiftType:     "Date",
-	SwiftDefault:  "Date()",
-	KotlinType:    "Date",
-	KotlinDefault: "Date()",
-	SqlcType:      "TIMESTAMPTZ",
-	isBuiltin:     true,
-}
