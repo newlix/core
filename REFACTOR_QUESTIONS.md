@@ -26,3 +26,11 @@
   A. 在 `FieldGoType` 中加入 `IsArray` 判斷，並在 marshal/unmarshal 產生迴圈邏輯
   B. 明確文件化不支援 `[]time.Time`，在 `GenerateJSONMarshalerIfNeeded` 加入 guard/panic
 - **目前狀態**：未處理（跳過）
+
+## [generators/golang/type.go] UnmarshalJSON 用 0 作為 nil sentinel，無法區分 epoch 與未設定
+- **問題描述**：生成的 `UnmarshalJSON` 用 `if tmp.CreatedAt != 0` 判斷是否設定 `*time.Time`。Unix timestamp 0（1970-01-01T00:00:00Z）會被當作「未設定」而保持 nil。MarshalJSON 也將 nil 編碼為 0，所以 round-trip 對稱，但無法表示 epoch zero。
+- **可能的做法**：
+  A. 改用 `*int64`（pointer）作為 alias field type，JSON `null` 代表未設定，`0` 代表 epoch
+  B. 文件化 epoch zero 不可表示（最小侵入）
+  C. 維持現狀 — 實務上 epoch zero 極少出現
+- **目前狀態**：未處理（跳過）
