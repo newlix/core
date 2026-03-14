@@ -91,6 +91,59 @@ func TestInitTypes(t *testing.T) {
 		assert.Equal(t, false, tt[0].IsBuiltin())
 	})
 
+	t.Run("initializes type with all builtin field types", func(t *testing.T) {
+		tt := mustInitTypes(t, core.Type{
+			Name: "product",
+			Fields: []core.Field{
+				{Name: "id", Type: core.Int},
+				{Name: "name", Type: core.String},
+				{Name: "is_active", Type: core.Bool},
+				{Name: "price", Type: core.Float},
+			},
+		})
+		assert.Equal(t, 4, len(tt[0].Fields))
+		assert.Equal(t, "int", tt[0].Fields[0].Type.GoType)
+		assert.Equal(t, "string", tt[0].Fields[1].Type.GoType)
+		assert.Equal(t, "bool", tt[0].Fields[2].Type.GoType)
+		assert.Equal(t, "float64", tt[0].Fields[3].Type.GoType)
+	})
+
+	t.Run("initializes type with no fields", func(t *testing.T) {
+		tt := mustInitTypes(t, core.Type{Name: "empty"})
+		assert.Equal(t, 0, len(tt[0].Fields))
+		assert.True(t, tt[0].IsInitialized())
+	})
+
+	t.Run("preserves array field flag", func(t *testing.T) {
+		tt := mustInitTypes(t, core.Type{
+			Name: "collection",
+			Fields: []core.Field{
+				{Name: "tags", Type: core.String, IsArray: true},
+			},
+		})
+		assert.True(t, tt[0].Fields[0].IsArray)
+	})
+
+	t.Run("initializes custom type field", func(t *testing.T) {
+		address := core.Type{
+			Name:   "address",
+			Fields: []core.Field{{Name: "street", Type: core.String}},
+		}
+		tt := mustInitTypes(t,
+			address,
+			core.Type{
+				Name: "person",
+				Fields: []core.Field{
+					{Name: "home", Type: address},
+				},
+			},
+		)
+		person := tt[1] // sorted: address, person
+		assert.Equal(t, "Address", person.Fields[0].Type.CamelName)
+		assert.True(t, person.Fields[0].Type.IsInitialized())
+		assert.False(t, person.Fields[0].Type.IsBuiltin())
+	})
+
 	t.Run("returns error on duplicate names", func(t *testing.T) {
 		_, err := core.InitTypes(
 			core.Type{Name: "item"},

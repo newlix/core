@@ -64,6 +64,44 @@ func TestInitMethods(t *testing.T) {
 		assert.True(t, mm[0].Outputs[0].Type.IsInitialized())
 	})
 
+	t.Run("initializes method with no inputs or outputs", func(t *testing.T) {
+		mm := mustInitMethods(t, core.Method{
+			Name: "health_check",
+		})
+		assert.Equal(t, 0, len(mm[0].Inputs))
+		assert.Equal(t, 0, len(mm[0].Outputs))
+		assert.Equal(t, "HealthCheck", mm[0].CamelName)
+	})
+
+	t.Run("initializes method with all builtin types", func(t *testing.T) {
+		mm := mustInitMethods(t, core.Method{
+			Name: "create_product",
+			Inputs: []core.Field{
+				{Name: "name", Type: core.String},
+				{Name: "price", Type: core.Float},
+				{Name: "is_active", Type: core.Bool},
+				{Name: "count", Type: core.Int},
+			},
+			Outputs: []core.Field{
+				{Name: "id", Type: core.Int},
+			},
+		})
+		assert.Equal(t, 4, len(mm[0].Inputs))
+		assert.Equal(t, 1, len(mm[0].Outputs))
+		assert.Equal(t, "float64", mm[0].Inputs[1].Type.GoType)
+		assert.Equal(t, "bool", mm[0].Inputs[2].Type.GoType)
+	})
+
+	t.Run("initializes method with array outputs", func(t *testing.T) {
+		mm := mustInitMethods(t, core.Method{
+			Name: "list_items",
+			Outputs: []core.Field{
+				{Name: "items", Type: core.String, IsArray: true},
+			},
+		})
+		assert.True(t, mm[0].Outputs[0].IsArray)
+	})
+
 	t.Run("returns error on duplicate names", func(t *testing.T) {
 		_, err := core.InitMethods(
 			core.Method{Name: "add_item"},
