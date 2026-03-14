@@ -47,24 +47,24 @@ func InitTypes(tt ...Type) []Type {
 	}
 
 	for i, t := range tt {
-		// overwrite
-		if t.LowerCamelName == "" {
-			t.LowerCamelName = strcase.ToLowerCamel(t.Name)
-		}
-
-		if t.CamelName == "" {
-			t.CamelName = strcase.ToCamel(t.Name)
-		}
-
-		if len(t.PrimaryKey) == 0 {
-			t.PrimaryKey = []string{"id"}
-		}
-
-		t.Fields = initFields(t.Fields)
-		t.isInitialized = true
-		tt[i] = t
+		tt[i] = initType(t)
 	}
 	return tt
+}
+
+func initType(t Type) Type {
+	if t.LowerCamelName == "" {
+		t.LowerCamelName = strcase.ToLowerCamel(t.Name)
+	}
+	if t.CamelName == "" {
+		t.CamelName = strcase.ToCamel(t.Name)
+	}
+	if len(t.PrimaryKey) == 0 {
+		t.PrimaryKey = []string{"id"}
+	}
+	t.Fields = initFields(t.Fields)
+	t.isInitialized = true
+	return t
 }
 
 var String = Type{

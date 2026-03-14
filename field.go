@@ -20,7 +20,7 @@ func initFields(ff []Field) []Field {
 		if f.CamelName == "" {
 			f.CamelName = strcase.ToCamel(f.Name)
 		}
-		f.Type = InitTypes(f.Type)[0]
+		f.Type = initType(f.Type)
 		ff[i] = f
 	}
 	return ff
