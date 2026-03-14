@@ -150,8 +150,10 @@ func GenerateJSONMarshalerIfNeeded(w io.Writer, t core.Type, pkg string, tags []
 	needsCustomJSON := false
 	for _, f := range t.Fields {
 		if f.Type.GoType == "*time.Time" {
+			if f.IsArray {
+				log.Fatalf("type %s field %s: []time.Time is not supported in JSON marshal codegen", t.Name, f.Name)
+			}
 			needsCustomJSON = true
-			break
 		}
 	}
 	if !needsCustomJSON {
@@ -244,7 +246,10 @@ func PackageName(pkg string) string {
 }
 
 func FieldGoType(pkg string, f core.Field, int64Time bool) string {
-	if int64Time && (f.Type.GoType == "*time.Time") {
+	if int64Time && f.Type.GoType == "*time.Time" {
+		if f.IsArray {
+			log.Fatalf("field %s: []time.Time is not supported in JSON marshal codegen", f.Name)
+		}
 		return "int64"
 	}
 	if f.IsArray {
