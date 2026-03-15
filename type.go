@@ -81,6 +81,9 @@ func initType(t Type) (Type, error) {
 	return t, nil
 }
 
+// Builtin type variables. Treat as immutable — do not modify their fields.
+//
+//nolint:gochecknoglobals
 var String = Type{
 	Name:          "string",
 	Description:   "built-in string",

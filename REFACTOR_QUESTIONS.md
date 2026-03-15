@@ -19,13 +19,6 @@ Items requiring user decisions before proceeding.
   - C: Rethink the SQL generation model to support richer query semantics.
 - **Status**: Not yet addressed.
 
-## core: Mutable package-level builtin type variables
-
-- **Problem**: `core.String`, `core.Int`, `core.Bool`, `core.Float` are `var` (not `const`), so any consumer can mutate them (e.g., `core.String.Name = "oops"`), silently corrupting all downstream usage. Also a potential race condition if accessed from multiple goroutines.
-- **Options**:
-  - A: Convert to functions returning fresh copies (e.g., `func String() Type { ... }`). Breaking API change.
-  - B: Keep as `var` but document the immutability contract.
-- **Status**: Not yet addressed.
 
 ## generators/sqlc: `findTable`/`findTableForInputs` fragile name matching
 
