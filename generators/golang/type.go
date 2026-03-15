@@ -3,7 +3,6 @@ package golang
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"regexp"
@@ -47,24 +46,26 @@ type GenerateTypesFileConfig struct {
 	Tags    []string
 }
 
-func GenerateTypesFile(c GenerateTypesFileConfig) {
+func GenerateTypesFile(c GenerateTypesFileConfig) error {
 	if len(c.Tags) == 0 {
 		c.Tags = defaultTags
 	}
 	for _, t := range c.Types {
 		if !t.IsInitialized() {
-			log.Fatalf("type %s is not initialized", t.Name)
+			return fmt.Errorf("type %s is not initialized", t.Name)
 		}
 	}
 
-	checkPackage(c.Package, c.Types)
+	if err := checkPackage(c.Package, c.Types); err != nil {
+		return err
+	}
 
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	w, err := os.Create(c.Output)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer w.Close()
 
@@ -75,15 +76,16 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 	GenerateImports(w, c.Package, c.Types)
 
 	GenerateTypes(w, c.Package, c.Types, c.Tags)
-
+	return nil
 }
 
-func checkPackage(pkg string, tt []core.Type) {
+func checkPackage(pkg string, tt []core.Type) error {
 	for _, t := range tt {
 		if t.GoPackage != pkg {
-			log.Fatalf("%s belongs to %q not %q", t.Name, t.GoPackage, pkg)
+			return fmt.Errorf("%s belongs to %q not %q", t.Name, t.GoPackage, pkg)
 		}
 	}
+	return nil
 }
 
 func GenerateImports(w io.Writer, pkg string, tt []core.Type) {

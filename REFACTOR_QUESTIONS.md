@@ -2,14 +2,6 @@
 
 Items requiring user decisions before proceeding.
 
-## generators/*: `log.Fatal` in library code
-
-- **Problem**: 20+ `log.Fatal`/`log.Fatalf` calls across all generator packages (`golang`, `swift`, `kotlin`, `sqlc`). `log.Fatal` calls `os.Exit(1)`, skipping defers and preventing error recovery. Commit `4d9e30f` already removed this pattern from `InitTypes`/`InitMethods` in the core package.
-- **Options**:
-  - A: Change all `Generate*File` functions to return `error`, update the example `cmd/gen/main.go` caller accordingly. Also change internal helpers (`checkPackage`, `findType`, `sqlcType`, `findTableForInputs`) to return errors.
-  - B: Keep `log.Fatal` in the top-level `Generate*File` functions (CLI entrypoints) but convert internal helpers to return errors.
-- **Status**: Not yet addressed.
-
 ## generators/sqlc: Missing WHERE clauses for input+output methods
 
 - **Problem**: `writeQuery` uses a priority switch — outputs-only → SELECT, inputs-only → INSERT. Methods with *both* inputs and outputs (e.g., `RemoveItem`) generate `SELECT ... FROM table;` without a WHERE clause, silently dropping input parameters. The generated query returns all rows instead of filtering.

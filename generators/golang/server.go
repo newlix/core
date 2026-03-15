@@ -2,7 +2,6 @@ package golang
 
 import (
 	"io"
-	"log"
 	"os"
 	"path"
 
@@ -18,13 +17,13 @@ type GenerateServerFileConfig struct {
 }
 
 // GenerateServerFile writes the Go server file to the configured output path.
-func GenerateServerFile(c GenerateServerFileConfig) {
+func GenerateServerFile(c GenerateServerFileConfig) error {
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	w, err := os.Create(c.Output)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer w.Close()
 
@@ -42,7 +41,7 @@ func GenerateServerFile(c GenerateServerFileConfig) {
 	GenerateMethodTypes(w, c.Package, c.Methods)
 	out(w, "")
 	GenerateServer(w, c.Methods)
-
+	return nil
 }
 
 // Generate writes the Go server implementations to w.

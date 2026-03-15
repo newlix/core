@@ -1,8 +1,8 @@
 package sqlc
 
 import (
+	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -15,17 +15,17 @@ type GenerateSchemaFileConfig struct {
 	Types  []core.Type
 }
 
-func GenerateSchemaFile(c GenerateSchemaFileConfig) {
+func GenerateSchemaFile(c GenerateSchemaFileConfig) error {
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	w, err := os.Create(c.Output)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer w.Close()
 
-	GenerateSchema(w, c.Types)
+	return GenerateSchema(w, c.Types)
 }
 
 func generateWarning(w io.Writer) {
@@ -33,7 +33,7 @@ func generateWarning(w io.Writer) {
 	out(w, "")
 }
 
-func GenerateSchema(w io.Writer, tt []core.Type) {
+func GenerateSchema(w io.Writer, tt []core.Type) error {
 	generateWarning(w)
 	first := true
 	for _, t := range tt {
@@ -47,7 +47,11 @@ func GenerateSchema(w io.Writer, tt []core.Type) {
 		first = false
 		out(w, "CREATE TABLE %s (", t.Name)
 		for j, f := range ff {
-			col := "    " + f.Name + " " + sqlcType(f)
+			typ, err := sqlcType(f)
+			if err != nil {
+				return err
+			}
+			col := "    " + f.Name + " " + typ
 			if isPrimaryKey(f.Name, t.PrimaryKey) {
 				col += " PRIMARY KEY"
 			}
@@ -61,6 +65,7 @@ func GenerateSchema(w io.Writer, tt []core.Type) {
 		}
 		out(w, ");")
 	}
+	return nil
 }
 
 func isPrimaryKey(name string, pk []string) bool {
@@ -72,10 +77,10 @@ func isPrimaryKey(name string, pk []string) bool {
 	return false
 }
 
-func sqlcType(f core.Field) string {
+func sqlcType(f core.Field) (string, error) {
 	t := f.Type.SqlcType
 	if t == "" {
-		log.Fatalf("missing SqlcType for %q", f.Type.Name)
+		return "", fmt.Errorf("missing SqlcType for %q", f.Type.Name)
 	}
-	return t
+	return t, nil
 }

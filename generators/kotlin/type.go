@@ -2,7 +2,6 @@ package kotlin
 
 import (
 	"io"
-	"log"
 	"os"
 	"path"
 
@@ -16,13 +15,13 @@ type GenerateTypesFileConfig struct {
 	Package string
 }
 
-func GenerateTypesFile(c GenerateTypesFileConfig) {
+func GenerateTypesFile(c GenerateTypesFileConfig) error {
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	w, err := os.Create(c.Output)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer w.Close()
 
@@ -34,6 +33,7 @@ func GenerateTypesFile(c GenerateTypesFileConfig) {
 	out(w, "import kotlinx.serialization.Serializable")
 	out(w, "")
 	GenerateTypes(w, c.Types)
+	return nil
 }
 
 func GenerateTypes(w io.Writer, ts []core.Type) {

@@ -2,7 +2,6 @@ package kotlin
 
 import (
 	"io"
-	"log"
 	"os"
 	"path"
 
@@ -18,13 +17,13 @@ type GenerateClientFileConfig struct {
 	Client       string
 }
 
-func GenerateClientFile(c GenerateClientFileConfig) {
+func GenerateClientFile(c GenerateClientFileConfig) error {
 	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	w, err := os.Create(c.Output)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer w.Close()
 
@@ -47,6 +46,7 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 	}
 	GenerateClient(w, c.Methods, c.Client)
 	GenerateMethodTypes(w, c.Methods)
+	return nil
 }
 
 const start = `data class CoreError(
