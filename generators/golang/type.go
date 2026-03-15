@@ -3,7 +3,6 @@ package golang
 import (
 	"fmt"
 	"io"
-	"os"
 	"path"
 	"regexp"
 	"sort"
@@ -60,23 +59,14 @@ func GenerateTypesFile(c GenerateTypesFileConfig) error {
 		return err
 	}
 
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	common.GenerateWarning(w)
-
-	out(w, "package %s", PackageName(c.Package))
-	out(w, "")
-	GenerateImports(w, c.Package, c.Types)
-
-	GenerateTypes(w, c.Package, c.Types, c.Tags)
-	return nil
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		common.GenerateWarning(w)
+		out(w, "package %s", PackageName(c.Package))
+		out(w, "")
+		GenerateImports(w, c.Package, c.Types)
+		GenerateTypes(w, c.Package, c.Types, c.Tags)
+		return nil
+	})
 }
 
 func checkPackage(pkg string, tt []core.Type) error {

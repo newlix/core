@@ -2,8 +2,6 @@ package kotlin
 
 import (
 	"io"
-	"os"
-	"path"
 
 	"github.com/newlix/core"
 	"github.com/newlix/core/generators/common"
@@ -18,35 +16,28 @@ type GenerateClientFileConfig struct {
 }
 
 func GenerateClientFile(c GenerateClientFileConfig) error {
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	common.GenerateWarning(w)
-	out(w, "@file:Suppress(\"unused\")")
-	out(w, "package %s", c.Package)
-	out(w, "")
-	out(w, "import kotlinx.coroutines.Dispatchers")
-	out(w, "import kotlinx.coroutines.withContext")
-	out(w, "import kotlinx.serialization.encodeToString")
-	out(w, "import kotlinx.serialization.json.Json")
-	out(w, "import kotlinx.serialization.SerialName")
-	out(w, "import kotlinx.serialization.Serializable")
-	out(w, "import okhttp3.OkHttpClient")
-	out(w, "import okhttp3.Request")
-	out(w, "import okhttp3.RequestBody.Companion.toRequestBody")
-	out(w, "")
-	if c.TypesPackage != "" {
-		out(w, "import %s.*", c.TypesPackage)
-	}
-	GenerateClient(w, c.Methods, c.Client)
-	GenerateMethodTypes(w, c.Methods)
-	return nil
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		common.GenerateWarning(w)
+		out(w, "@file:Suppress(\"unused\")")
+		out(w, "package %s", c.Package)
+		out(w, "")
+		out(w, "import kotlinx.coroutines.Dispatchers")
+		out(w, "import kotlinx.coroutines.withContext")
+		out(w, "import kotlinx.serialization.encodeToString")
+		out(w, "import kotlinx.serialization.json.Json")
+		out(w, "import kotlinx.serialization.SerialName")
+		out(w, "import kotlinx.serialization.Serializable")
+		out(w, "import okhttp3.OkHttpClient")
+		out(w, "import okhttp3.Request")
+		out(w, "import okhttp3.RequestBody.Companion.toRequestBody")
+		out(w, "")
+		if c.TypesPackage != "" {
+			out(w, "import %s.*", c.TypesPackage)
+		}
+		GenerateClient(w, c.Methods, c.Client)
+		GenerateMethodTypes(w, c.Methods)
+		return nil
+	})
 }
 
 const start = `data class CoreError(

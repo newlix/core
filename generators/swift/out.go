@@ -1,10 +1,5 @@
 package swift
 
-import (
-	"fmt"
-	"io"
-)
+import "github.com/newlix/core/generators/common"
 
-func out(w io.Writer, format string, a ...any) {
-	fmt.Fprintf(w, format+"\n", a...)
-}
+var out = common.Out

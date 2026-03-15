@@ -3,11 +3,10 @@ package sqlc
 import (
 	"fmt"
 	"io"
-	"os"
-	"path"
 	"strings"
 
 	"github.com/newlix/core"
+	"github.com/newlix/core/generators/common"
 )
 
 type GenerateSchemaFileConfig struct {
@@ -16,16 +15,9 @@ type GenerateSchemaFileConfig struct {
 }
 
 func GenerateSchemaFile(c GenerateSchemaFileConfig) error {
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	return GenerateSchema(w, c.Types)
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		return GenerateSchema(w, c.Types)
+	})
 }
 
 func generateWarning(w io.Writer) {

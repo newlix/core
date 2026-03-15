@@ -2,8 +2,6 @@ package golang
 
 import (
 	"io"
-	"os"
-	"path"
 
 	"github.com/newlix/core"
 	"github.com/newlix/core/generators/common"
@@ -18,18 +16,11 @@ type GenerateClientFileConfig struct {
 
 // GenerateClientFile writes the Go client file to the configured output path.
 func GenerateClientFile(c GenerateClientFileConfig) error {
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-	common.GenerateWarning(w)
-	out(w, "package %s", PackageName(c.Package))
-	out(w, "")
-	out(w, `import (
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		common.GenerateWarning(w)
+		out(w, "package %s", PackageName(c.Package))
+		out(w, "")
+		out(w, `import (
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -37,12 +28,13 @@ func GenerateClientFile(c GenerateClientFileConfig) error {
 	"net/http"
 	"strings"
 )`)
-	out(w, "")
-	GenerateImports(w, c.Package, c.Types)
-	GenerateMethodTypes(w, c.Package, c.Methods)
-	out(w, "")
-	GenerateClient(w, c.Methods)
-	return nil
+		out(w, "")
+		GenerateImports(w, c.Package, c.Types)
+		GenerateMethodTypes(w, c.Package, c.Methods)
+		out(w, "")
+		GenerateClient(w, c.Methods)
+		return nil
+	})
 }
 
 func GenerateClient(w io.Writer, mm []core.Method) {

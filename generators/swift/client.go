@@ -2,8 +2,6 @@ package swift
 
 import (
 	"io"
-	"os"
-	"path"
 
 	"github.com/newlix/core"
 	"github.com/newlix/core/generators/common"
@@ -16,22 +14,14 @@ type GenerateClientFileConfig struct {
 }
 
 func GenerateClientFile(c GenerateClientFileConfig) error {
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	common.GenerateWarning(w)
-	out(w, "import Foundation")
-	out(w, "")
-
-	GenerateClient(w, c.Methods, c.Client)
-	GenerateMethodTypes(w, c.Methods)
-	return nil
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		common.GenerateWarning(w)
+		out(w, "import Foundation")
+		out(w, "")
+		GenerateClient(w, c.Methods, c.Client)
+		GenerateMethodTypes(w, c.Methods)
+		return nil
+	})
 }
 
 const start = `struct CoreError: LocalizedError {

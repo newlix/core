@@ -8,11 +8,10 @@ package sqlc
 import (
 	"fmt"
 	"io"
-	"os"
-	"path"
 	"strings"
 
 	"github.com/newlix/core"
+	"github.com/newlix/core/generators/common"
 )
 
 type GenerateQueriesFileConfig struct {
@@ -22,16 +21,9 @@ type GenerateQueriesFileConfig struct {
 }
 
 func GenerateQueriesFile(c GenerateQueriesFileConfig) error {
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	return GenerateQueries(w, c.Methods, c.Types)
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		return GenerateQueries(w, c.Methods, c.Types)
+	})
 }
 
 func GenerateQueries(w io.Writer, mm []core.Method, tt []core.Type) error {
@@ -48,7 +40,7 @@ func GenerateQueries(w io.Writer, mm []core.Method, tt []core.Type) error {
 }
 
 func writeQuery(w io.Writer, m core.Method, tt []core.Type) error {
-	outputs, err := builtinOutputFields(m, tt)
+	outputs, err := expandFields(m.Outputs, tt, true)
 	if err != nil {
 		return err
 	}
@@ -81,7 +73,7 @@ func writeSelect(w io.Writer, m core.Method, outputs []core.Field, tt []core.Typ
 }
 
 func writeInsert(w io.Writer, m core.Method, tt []core.Type) error {
-	inputs, err := expandInputFields(m.Inputs, tt)
+	inputs, err := expandFields(m.Inputs, tt, false)
 	if err != nil {
 		return err
 	}
@@ -122,11 +114,11 @@ func hasArray(ff []core.Field) bool {
 	return false
 }
 
-// builtinOutputFields expands composite output fields into their builtin sub-fields.
-// If the original field is an array, the expanded sub-fields inherit IsArray.
-func builtinOutputFields(m core.Method, tt []core.Type) ([]core.Field, error) {
+// expandFields expands composite fields into their builtin sub-fields.
+// If propagateArray is true and the parent field is an array, sub-fields inherit IsArray.
+func expandFields(ff []core.Field, tt []core.Type, propagateArray bool) ([]core.Field, error) {
 	var fields []core.Field
-	for _, f := range m.Outputs {
+	for _, f := range ff {
 		if f.Type.IsBuiltin() {
 			fields = append(fields, f)
 		} else {
@@ -134,31 +126,13 @@ func builtinOutputFields(m core.Method, tt []core.Type) ([]core.Field, error) {
 			if err != nil {
 				return nil, err
 			}
-			for _, sf := range core.BuiltinTypeFields(t.Fields) {
-				if f.IsArray {
-					sf.IsArray = true
+			subs := core.BuiltinTypeFields(t.Fields)
+			if propagateArray && f.IsArray {
+				for i := range subs {
+					subs[i].IsArray = true
 				}
-				fields = append(fields, sf)
 			}
-		}
-	}
-	return fields, nil
-}
-
-// expandInputFields expands composite input fields into their builtin sub-fields.
-func expandInputFields(inputs []core.Field, tt []core.Type) ([]core.Field, error) {
-	var fields []core.Field
-	for _, f := range inputs {
-		if f.Type.IsBuiltin() {
-			fields = append(fields, f)
-		} else {
-			t, err := findType(f.Type.Name, tt)
-			if err != nil {
-				return nil, err
-			}
-			for _, sf := range core.BuiltinTypeFields(t.Fields) {
-				fields = append(fields, sf)
-			}
+			fields = append(fields, subs...)
 		}
 	}
 	return fields, nil

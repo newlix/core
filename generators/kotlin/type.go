@@ -2,8 +2,6 @@ package kotlin
 
 import (
 	"io"
-	"os"
-	"path"
 
 	"github.com/newlix/core"
 	"github.com/newlix/core/generators/common"
@@ -16,24 +14,16 @@ type GenerateTypesFileConfig struct {
 }
 
 func GenerateTypesFile(c GenerateTypesFileConfig) error {
-	if err := os.MkdirAll(path.Dir(c.Output), 0o700); err != nil {
-		return err
-	}
-	w, err := os.Create(c.Output)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	common.GenerateWarning(w)
-
-	out(w, "package %s", c.Package)
-	out(w, "")
-	out(w, "import kotlinx.serialization.SerialName")
-	out(w, "import kotlinx.serialization.Serializable")
-	out(w, "")
-	GenerateTypes(w, c.Types)
-	return nil
+	return common.GenerateFile(c.Output, func(w io.Writer) error {
+		common.GenerateWarning(w)
+		out(w, "package %s", c.Package)
+		out(w, "")
+		out(w, "import kotlinx.serialization.SerialName")
+		out(w, "import kotlinx.serialization.Serializable")
+		out(w, "")
+		GenerateTypes(w, c.Types)
+		return nil
+	})
 }
 
 func GenerateTypes(w io.Writer, ts []core.Type) {
