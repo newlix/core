@@ -15,10 +15,10 @@ func GenerateFile(output string, fn func(w io.Writer) error) error {
 	if err != nil {
 		return err
 	}
-	defer w.Close()
 	if err := fn(w); err != nil {
+		w.Close()
 		os.Remove(output)
 		return err
 	}
-	return nil
+	return w.Close()
 }
