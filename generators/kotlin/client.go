@@ -52,18 +52,15 @@ func GenerateClientFile(c GenerateClientFileConfig) {
 const start = `data class CoreError(
     val status: Int,
     val msg: String
-) : Exception()
+) : Exception("HTTP $status: $msg")
 
 // %s is the API client.
 // url is the required API endpoint address.
-class %s(val endpoint: String) {
+class %s(val endpoint: String, val client: OkHttpClient = OkHttpClient()) {
     private val json = Json { ignoreUnknownKeys = true }
 
     // AuthToken is an optional authentication token.
     var authToken: String? = null
-
-    // client is used for making requests.
-    val client = OkHttpClient()
 
     private suspend inline fun <reified Input, reified Output> call(
         method: String, input: Input
@@ -80,7 +77,8 @@ class %s(val endpoint: String) {
             }
 
             return@withContext client.newCall(request.build()).execute().use { response ->
-                val body: String = response.body?.string() ?: ""
+                val body: String = response.body?.string()
+                    ?: throw CoreError(status = response.code, msg = "empty response body")
                 if (!response.isSuccessful) {
                     throw CoreError(
                         status = response.code,
