@@ -84,8 +84,8 @@ func writeInsert(w io.Writer, m core.Method, tt []core.Type) error {
 			return err
 		}
 	}
-	var cols []string
-	var params []string
+	cols := make([]string, 0, len(inputs))
+	params := make([]string, 0, len(inputs))
 	for _, f := range inputs {
 		cols = append(cols, f.Name)
 		params = append(params, sqlcParam(f.Name))
