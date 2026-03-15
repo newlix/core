@@ -1,3 +1,8 @@
+// Package sqlc generates sqlc-compatible SQL scaffolding from core types and methods.
+//
+// The generated queries are starting points — not production-ready SQL.
+// Methods with both inputs and outputs generate SELECT without WHERE clauses;
+// users must add filtering, joins, and other query logic manually.
 package sqlc
 
 import (
