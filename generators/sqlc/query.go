@@ -62,9 +62,13 @@ func writeQuery(w io.Writer, m core.Method, tt []core.Type) error {
 }
 
 func writeSelect(w io.Writer, m core.Method, outputs []core.Field, tt []core.Type) error {
-	table, err := findTable(outputs[0], tt)
-	if err != nil {
-		return err
+	table := m.Table
+	if table == "" {
+		var err error
+		table, err = findTable(outputs[0], tt)
+		if err != nil {
+			return err
+		}
 	}
 	cols := columnNames(outputs)
 	out(w, "SELECT %s FROM %s;", strings.Join(cols, ", "), table)
@@ -76,9 +80,12 @@ func writeInsert(w io.Writer, m core.Method, tt []core.Type) error {
 	if err != nil {
 		return err
 	}
-	table, err := findTableForInputs(m.Inputs, tt)
-	if err != nil {
-		return err
+	table := m.Table
+	if table == "" {
+		table, err = findTableForInputs(m.Inputs, tt)
+		if err != nil {
+			return err
+		}
 	}
 	var cols []string
 	var params []string

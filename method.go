@@ -15,6 +15,7 @@ type Method struct {
 	Description    string  `json:"description"`
 	Inputs         []Field `json:"inputs"`
 	Outputs        []Field `json:"outputs"`
+	Table          string  `json:"table,omitempty"` // target table for SQL generation
 }
 
 // InitMethods initializes and validates methods.

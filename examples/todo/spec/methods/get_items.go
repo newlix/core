@@ -8,6 +8,7 @@ import (
 var GetItems = core.Method{
 	Name:        "get_items",
 	Description: "GetItems returns all items in the list.",
+	Table:       "item",
 	Outputs: []core.Field{
 		{
 			Name:        "items",

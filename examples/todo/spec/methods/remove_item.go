@@ -8,6 +8,7 @@ import (
 var RemoveItem = core.Method{
 	Name:        "remove_item",
 	Description: "RemoveItem removes an item from the to-do list.",
+	Table:       "item",
 	Inputs: []core.Field{
 		{
 			Name:        "id",

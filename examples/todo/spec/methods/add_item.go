@@ -8,6 +8,7 @@ import (
 var AddItem = core.Method{
 	Name:        "add_item",
 	Description: "AddItem adds an item to the list.",
+	Table:       "item",
 	Inputs: []core.Field{
 		{
 			Name:        "item",

@@ -12,11 +12,3 @@ Items requiring user decisions before proceeding.
 - **Status**: Not yet addressed.
 
 
-## generators/sqlc: `findTable`/`findTableForInputs` fragile name matching
-
-- **Problem**: When a field is a builtin type, `findTable` searches all types for the first type containing a field with that name. If two types share a field name (e.g., both `item` and `order` have `id`), the wrong table may be selected.
-- **Options**:
-  - A: Require methods to explicitly specify the target table.
-  - B: Carry the parent type context through from method definition.
-- **Status**: Not yet addressed.
-
