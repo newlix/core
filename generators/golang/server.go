@@ -34,7 +34,7 @@ func GenerateServerFile(c GenerateServerFileConfig) error {
 	})
 }
 
-// Generate writes the Go server implementations to w.
+// GenerateServer writes the Go server handler to w.
 func GenerateServer(w io.Writer, mm []core.Method) {
 	out(w, "// ServeHTTP implementation.")
 	out(w, "func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {")

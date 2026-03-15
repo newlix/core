@@ -161,14 +161,13 @@ func FieldGoType(pkg string, f core.Field) string {
 }
 
 func TypeGoType(pkg string, t core.Type) string {
-	s := t.GoType
-	if s == "" {
-		s = t.CamelName
-		if t.GoPackage != pkg {
-			s = PackageName(t.GoPackage) + "." + s
-		}
+	if t.GoType != "" {
+		return t.GoType
 	}
-	return s
+	if t.GoPackage != pkg {
+		return PackageName(t.GoPackage) + "." + t.CamelName
+	}
+	return t.CamelName
 }
 
 // goTags returns tags for a field.

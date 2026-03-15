@@ -11,12 +11,11 @@ type ServerError struct {
 	Message string
 }
 
-// Error implementation.
 func (e ServerError) Error() string {
 	return e.Message
 }
 
-// Error returns a new ServerError with HTTP status code, kind and message.
+// Error returns a new ServerError with the given status code and message.
 func Error(status int, message string) error {
 	return ServerError{
 		Status:  status,
