@@ -27,7 +27,6 @@ func GenerateTypesFile(c GenerateTypesFileConfig) error {
 }
 
 func GenerateTypes(w io.Writer, ts []core.Type) {
-	// types
 	for _, t := range ts {
 		out(w, "// %s", t.Description)
 		out(w, "@Serializable")
@@ -40,12 +39,10 @@ func GenerateTypes(w io.Writer, ts []core.Type) {
 		out(w, ")")
 		out(w, "")
 	}
-
 }
 
 func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 	for _, m := range ms {
-		// inputs
 		prefix := ""
 		if len(m.Inputs) > 0 {
 			prefix = "data "
@@ -56,7 +53,6 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 		out(w, ")")
 		out(w, "")
 
-		// outputs
 		prefix = ""
 		if len(m.Outputs) > 0 {
 			prefix = "data "
@@ -67,10 +63,8 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 		out(w, ")")
 		out(w, "")
 	}
-
 }
 
-// writeFields to writer.
 func writeFields(w io.Writer, fs []core.Field) {
 	for _, f := range fs {
 		out(w, "    @SerialName(\"%s\") val %s: %s = %s,", f.Name, f.LowerCamelName, kotlinType(f), kotlinDefault(f))

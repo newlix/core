@@ -49,7 +49,6 @@ func GenerateServer(w io.Writer, mm []core.Method) {
 	out(w, "	switch r.URL.Path {")
 
 	for _, m := range mm {
-
 		out(w, "	case \"/%s\":", m.Name)
 		name := GoName(m.CamelName)
 		out(w, "		var in %sInput", name)

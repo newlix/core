@@ -58,7 +58,6 @@ func GenerateMethodTypes(w io.Writer, ms []core.Method) {
 	}
 }
 
-// writeFields to writer.
 func writeFields(w io.Writer, fields []core.Field) {
 	for i, f := range fields {
 		out(w, "    // %s", f.Description)
@@ -69,7 +68,6 @@ func writeFields(w io.Writer, fields []core.Field) {
 	}
 }
 
-// writeCodingKeys to writer.
 func writeCodingKeys(w io.Writer, fields []core.Field) {
 	if len(fields) == 0 {
 		return
@@ -82,7 +80,6 @@ func writeCodingKeys(w io.Writer, fields []core.Field) {
 	out(w, "    }")
 }
 
-// writeDecoderInit to writer.
 func writeDecoderInit(w io.Writer, extensionName string, fields []core.Field) {
 	if len(fields) == 0 {
 		return

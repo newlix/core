@@ -85,10 +85,8 @@ func GenerateImports(w io.Writer, pkg string, tt []core.Type) {
 			m[t.GoPackage] = true
 		}
 		for _, f := range t.Fields {
-			if f.Type.GoPackage != "" {
-				if f.Type.GoPackage != pkg {
-					m[f.Type.GoPackage] = true
-				}
+			if f.Type.GoPackage != "" && f.Type.GoPackage != pkg {
+				m[f.Type.GoPackage] = true
 			}
 		}
 	}
@@ -123,8 +121,6 @@ func GenerateTypes(w io.Writer, pkg string, tt []core.Type, tags []string) {
 
 func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method) {
 	tags := []string{"json"}
-
-	// methods
 	for i, m := range mm {
 		name := GoName(m.CamelName)
 		out(w, "type %sInput struct {", name)
@@ -140,7 +136,6 @@ func GenerateMethodTypes(w io.Writer, pkg string, mm []core.Method) {
 	}
 }
 
-// writeFields to writer
 func writeFields(w io.Writer, pkg string, ff []core.Field, tags []string) {
 	for i, f := range ff {
 		out(w, "	// %s", f.Description)
@@ -164,6 +159,7 @@ func FieldGoType(pkg string, f core.Field) string {
 	}
 	return TypeGoType(pkg, f.Type)
 }
+
 func TypeGoType(pkg string, t core.Type) string {
 	s := t.GoType
 	if s == "" {

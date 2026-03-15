@@ -121,19 +121,19 @@ func expandFields(ff []core.Field, tt []core.Type, propagateArray bool) ([]core.
 	for _, f := range ff {
 		if f.Type.IsBuiltin() {
 			fields = append(fields, f)
-		} else {
-			t, err := findType(f.Type.Name, tt)
-			if err != nil {
-				return nil, err
-			}
-			subs := core.BuiltinTypeFields(t.Fields)
-			if propagateArray && f.IsArray {
-				for i := range subs {
-					subs[i].IsArray = true
-				}
-			}
-			fields = append(fields, subs...)
+			continue
 		}
+		t, err := findType(f.Type.Name, tt)
+		if err != nil {
+			return nil, err
+		}
+		subs := core.BuiltinTypeFields(t.Fields)
+		if propagateArray && f.IsArray {
+			for i := range subs {
+				subs[i].IsArray = true
+			}
+		}
+		fields = append(fields, subs...)
 	}
 	return fields, nil
 }
