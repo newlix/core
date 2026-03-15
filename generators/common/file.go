@@ -16,5 +16,9 @@ func GenerateFile(output string, fn func(w io.Writer) error) error {
 		return err
 	}
 	defer w.Close()
-	return fn(w)
+	if err := fn(w); err != nil {
+		os.Remove(output)
+		return err
+	}
+	return nil
 }

@@ -182,7 +182,7 @@ func findTableForInputs(inputs []core.Field, tt []core.Type) (string, error) {
 }
 
 func columnNames(ff []core.Field) []string {
-	var cols []string
+	cols := make([]string, 0, len(ff))
 	for _, f := range ff {
 		cols = append(cols, f.Name)
 	}

@@ -177,8 +177,7 @@ func TypeGoType(pkg string, t core.Type) string {
 
 // goTags returns tags for a field.
 func goTags(name string, tags []string) string {
-	var s []string
-
+	s := make([]string, 0, len(tags))
 	for _, tag := range tags {
 		s = append(s, fmt.Sprintf("%s:%q", tag, name))
 	}

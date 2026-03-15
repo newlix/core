@@ -38,7 +38,7 @@ func initFields(ff []Field) ([]Field, error) {
 }
 
 func BuiltinTypeFields(ff []Field) []Field {
-	out := []Field{}
+	out := make([]Field, 0, len(ff))
 	for _, f := range ff {
 		if f.Type.IsBuiltin() {
 			out = append(out, f)
