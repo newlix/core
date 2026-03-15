@@ -41,8 +41,15 @@ func InitMethods(mm ...Method) ([]Method, error) {
 			m.CamelName = strcase.ToCamel(m.Name)
 		}
 
-		m.Inputs = initFields(m.Inputs)
-		m.Outputs = initFields(m.Outputs)
+		var err error
+		m.Inputs, err = initFields(m.Inputs)
+		if err != nil {
+			return nil, fmt.Errorf("method %q inputs: %w", m.Name, err)
+		}
+		m.Outputs, err = initFields(m.Outputs)
+		if err != nil {
+			return nil, fmt.Errorf("method %q outputs: %w", m.Name, err)
+		}
 		mm[i] = m
 	}
 

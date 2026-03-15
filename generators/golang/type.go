@@ -38,7 +38,7 @@ func GoName(name string) string {
 	})
 }
 
-var DefaultTags = []string{"json", "db"}
+var defaultTags = []string{"json", "db"}
 
 type GenerateTypesFileConfig struct {
 	Output  string
@@ -49,7 +49,7 @@ type GenerateTypesFileConfig struct {
 
 func GenerateTypesFile(c GenerateTypesFileConfig) {
 	if len(c.Tags) == 0 {
-		c.Tags = DefaultTags
+		c.Tags = defaultTags
 	}
 	for _, t := range c.Types {
 		if !t.IsInitialized() {

@@ -156,4 +156,14 @@ func TestInitTypes(t *testing.T) {
 		)
 		assert.Error(t, err)
 	})
+
+	t.Run("returns error on empty field name", func(t *testing.T) {
+		_, err := core.InitTypes(core.Type{
+			Name: "item",
+			Fields: []core.Field{
+				{Name: "", Type: core.String},
+			},
+		})
+		assert.Error(t, err)
+	})
 }

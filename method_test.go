@@ -114,4 +114,24 @@ func TestInitMethods(t *testing.T) {
 		)
 		assert.Error(t, err)
 	})
+
+	t.Run("returns error on empty input field name", func(t *testing.T) {
+		_, err := core.InitMethods(core.Method{
+			Name: "add_item",
+			Inputs: []core.Field{
+				{Name: "", Type: core.String},
+			},
+		})
+		assert.Error(t, err)
+	})
+
+	t.Run("returns error on empty output field name", func(t *testing.T) {
+		_, err := core.InitMethods(core.Method{
+			Name: "add_item",
+			Outputs: []core.Field{
+				{Name: "", Type: core.Int},
+			},
+		})
+		assert.Error(t, err)
+	})
 }

@@ -35,18 +35,3 @@ Items requiring user decisions before proceeding.
   - B: Carry the parent type context through from method definition.
 - **Status**: Not yet addressed.
 
-## core: Empty `Field.Name` validation
-
-- **Problem**: `InitTypes`/`InitMethods` now validate empty names for types and methods, but `initFields` does not validate empty `Field.Name`. A field with `Name: ""` produces empty identifiers in generated code (e.g., `var : String` in Swift).
-- **Options**:
-  - A: Change `initFields` to return `error`, cascading through `initType` → `InitTypes`/`InitMethods`. Consistent but requires signature changes.
-  - B: Panic on empty field name (programming error, not user input).
-- **Status**: Not yet addressed.
-
-## generators/golang: Mutable `DefaultTags` slice
-
-- **Problem**: `golang.DefaultTags` is an exported `var` slice. Any consumer can mutate it (e.g., `golang.DefaultTags[0] = "xml"`), corrupting the default for all subsequent calls. Same class of issue as mutable builtin type vars.
-- **Options**:
-  - A: Make it a function returning a fresh copy. Minor API change.
-  - B: Make it unexported and inline the default in `GenerateTypesFile`.
-- **Status**: Not yet addressed.

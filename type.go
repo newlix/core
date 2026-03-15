@@ -50,14 +50,18 @@ func InitTypes(tt ...Type) ([]Type, error) {
 	}
 
 	for i, t := range tt {
-		tt[i] = initType(t)
+		var err error
+		tt[i], err = initType(t)
+		if err != nil {
+			return nil, fmt.Errorf("type %q: %w", t.Name, err)
+		}
 	}
 	return tt, nil
 }
 
-func initType(t Type) Type {
+func initType(t Type) (Type, error) {
 	if t.isInitialized {
-		return t
+		return t, nil
 	}
 	if t.LowerCamelName == "" {
 		t.LowerCamelName = strcase.ToLowerCamel(t.Name)
@@ -68,9 +72,13 @@ func initType(t Type) Type {
 	if len(t.PrimaryKey) == 0 {
 		t.PrimaryKey = []string{"id"}
 	}
-	t.Fields = initFields(t.Fields)
+	var err error
+	t.Fields, err = initFields(t.Fields)
+	if err != nil {
+		return Type{}, err
+	}
 	t.isInitialized = true
-	return t
+	return t, nil
 }
 
 var String = Type{
